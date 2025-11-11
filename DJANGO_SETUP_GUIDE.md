@@ -13,87 +13,140 @@ which python # verify it points to venv/bin/python
 ## 2. Install Django
 
 ```bash
-pip install django python-decouple
+pip install --upgrade pip
+pip install django
+django-admin --version  # verify installation
 ```
 
 ## 3. Create Project
 
 ```bash
-django-admin startproject project_name .
+django-admin startproject schools_airquality_MSP3 .
 ```
 
-## 4. Create App.
+Note: The `.` creates the project in the current directory
+
+## 4. Setup .gitignore
+
+Create `.gitignore` before first commit:
 
 ```bash
-python manage.py startapp app_name
+touch .gitignore
+code .gitignore  # or nano .gitignore
 ```
 
-## 5. Test the Server
+Include:
+- venv/, .venv/
+- db.sqlite3
+- .env, .env.*
+- __pycache__/
+- .DS_Store
+- *.log
+
+## 5. Initial Database Setup
+
+```bash
+python manage.py migrate
+```
+
+This creates the SQLite database with Django's built-in tables.
+
+## 6. Test the Server
 
 ```bash
 python manage.py runserver
 ```
 
-## 6. Setup .gitignore
+Visit `http://127.0.0.1:8000/` - should see Django welcome page
+Stop server: `CTRL + C`
 
-Copy from this project or create with:
+## 7. First Commit
 
-- venv/, .venv/
-- db.sqlite3
-- .env, .env.\*
-- **pycache**/
-- .DS_Store
+```bash
+git add .
+git commit -m "Initial Django project setup with venv and .gitignore"
+git push origin main
+```
 
-## 7. Secure SECRET_KEY
+---
+
+## Next Steps (Not Done Yet)
+
+### Create App
+
+```bash
+python manage.py startapp monitoring
+```
+
+Then add `'monitoring'` to `INSTALLED_APPS` in `settings.py`
+
+### Secure SECRET_KEY (Optional - do later)
+
+Install python-decouple:
+```bash
+pip install python-decouple
+```
 
 In settings.py:
-
 ```python
 from decouple import config
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-local-dev-key')
 ```
 
 Create `.env`:
-
 ```
 SECRET_KEY=your-actual-secret-key-from-settings
 ```
 
-Create `.env.example`:
-
-```
-SECRET_KEY=your-secret-key-here
-```
-
-## 8. Finalize
+### Create Superuser (for Django admin)
 
 ```bash
-python manage.py migrate
-pip freeze > requirements.txt
-python manage.py runserver  # test it works
-git add .
-git commit -m "Initial Django setup"
-git push origin main
+python manage.py createsuperuser
 ```
 
-## Common Issues
+---
 
-- If `(base)` appears: run `conda deactivate`
-- If django-admin not found: check venv is activated
-- If SECRET_KEY error: check `.env` file exists and settings.py imports config
-
-## Daily Workflow (Working on Existing Project)
+## Daily Workflow (Working on This Project)
 
 ```bash
 # Navigate to project
-cd /path/to/project
+cd /Users/GK/Documents/vscode-projects/Schools_AirQuality_MSP3
+
+# Deactivate conda if (base) appears
+conda deactivate
 
 # Activate virtual environment
 source venv/bin/activate
+
+# Verify you're in venv
+which python  # should show: .../Schools_AirQuality_MSP3/venv/bin/python
 
 # Run development server
 python manage.py runserver
 ```
 
-To stop the server: `CONTROL-C`
+To stop the server: `CTRL + C`
 To deactivate venv: `deactivate`
+
+## Common Issues
+
+- If `(base)` appears: run `conda deactivate` before activating venv
+- If django-admin not found: check venv is activated with `which python`
+- If venv doesn't activate: make sure you're in the project directory
+- If SECRET_KEY error (later): check `.env` file exists and settings.py imports config
+
+## What's Been Done
+
+✅ Virtual environment created  
+✅ Django 5.2.8 installed  
+✅ Project `schools_airquality_MSP3` created  
+✅ `.gitignore` configured  
+✅ Database migrated  
+✅ Committed to GitHub  
+
+## What's Next
+
+⏳ Create monitoring app  
+⏳ Create models (Schools, AirQualityData)  
+⏳ Set up Django admin  
+⏳ Create views and templates  
