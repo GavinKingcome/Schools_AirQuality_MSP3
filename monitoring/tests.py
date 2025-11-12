@@ -12,5 +12,13 @@ class SchoolModelTest(TestCase):
         
         # Check that the school was created with the correct name
         self.assertEqual(school.name, "Lyndhurst Primary School")
-                                       
-                                       
+        
+    def test_create_school_with_location(self):
+         """Test that we can create a school with a location - US-1"""  # User Story 1
+         school = School.objects.create(
+            name="Lyndhurst Primary School",
+            location="80 Grove Lane, London SE5 8SN, UK")
+         
+         self.assertEqual(school.location, "80 Grove Lane, London SE5 8SN, UK")
+         
+                                         
