@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from monitoring.views import map_view
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', map_view, name='home'),
 ]

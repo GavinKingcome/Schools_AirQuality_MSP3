@@ -18,6 +18,67 @@ This application allows users to:
 - **Testing:** Django's built-in test framework
 - **Development Approach:** Test-Driven Development (TDD)
 
+## Database Architecture
+
+### Current Implementation
+- **Database:** SQLite3
+- **Rationale:** Simplicity for development and assessment
+- All CRUD operations for schools and air quality readings
+- Supports Django ORM queries for statistics
+
+### Future Scalability Plan
+- **Planned Migration:** PostgreSQL with TimescaleDB extension
+- **Benefits:**
+  - Optimized for time-series pollution data
+  - Automatic data partitioning by time
+  - Fast aggregation queries (hourly/daily averages)
+  - Production-ready scalability
+- **Implementation:** Change database backend in settings.py (5 lines)
+- **Timeline:** Post-MSP3 submission enhancement
+
+## Air Quality Data Sources
+
+### Current Implementation (MSP3)
+- **API:** OpenAQ (Open Air Quality)
+- **Endpoint:** https://api.openaq.org/v2/
+- **Coverage:** Global air quality measurements
+- **Rationale:** 
+  - Proof of concept with worldwide applicability
+  - No API key required
+  - Simple integration for TDD development
+  - Assessors can test with any location
+
+### Planned Migration (Final Project)
+- **Primary Source:** London Air Quality Network (LAQN)
+- **API:** https://www.londonair.org.uk/LondonAir/API/
+- **Benefits:**
+  - Official UK government monitoring data
+  - Operated by King's College London & Imperial College
+  - Real monitoring stations (not interpolated)
+  - Hourly granular data for London
+  - Used for regulatory compliance reporting
+- **Fallback:** OpenAQ for schools outside London
+- **Implementation:** Swap API endpoint in fetch command (15 lines of code)
+- **Timeline:** Post-MSP3 enhancement for final project
+
+### Data Accuracy Considerations
+
+**OpenAQ (Current):**
+- Aggregates from multiple sources globally
+- May include interpolated values between stations
+- Good for proof-of-concept and broad coverage
+
+**LAQN (Planned):**
+- Direct measurements from calibrated equipment
+- No interpolation - actual readings from specific sites
+- Higher accuracy for London-based schools
+- Official data trusted by researchers and policymakers
+
+**Why Both?**
+- LAQN for London schools (maximum accuracy)
+- OpenAQ for schools outside London (broad coverage)
+- Demonstrates adaptable architecture
+
 ## Test-Driven Development Approach
 
 This project follows **TDD principles** throughout development:
