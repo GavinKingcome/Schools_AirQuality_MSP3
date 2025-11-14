@@ -32,3 +32,5 @@ local_settings.py
 # Static/Media (add later when needed)
 /static/
 /media/
+
+.env

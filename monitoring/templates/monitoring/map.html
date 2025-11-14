@@ -1,198 +1,202 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schools Air Quality Monitor - Django MSP3</title>
-    
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+<html>
+  <head>
+    <title>School Air Quality Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        header {
-            background: #2563eb;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        header h1 {
-            margin-bottom: 10px;
-        }
-        
-        #map {
-            height: 600px;
-            width: 100%;
-        }
-        
-        .info-box {
-            text-align: center;
-            padding: 40px;
-            background: #f3f4f6;
-            margin: 20px;
-            border-radius: 8px;
-        }
-        
-        .info-box a {
-            color: #2563eb;
-            text-decoration: none;
-        }
-        
-        .info-box a:hover {
-            text-decoration: underline;
-        }
-        
-        /* Popup styling */
-        .leaflet-popup-content {
-            min-width: 200px;
-        }
-        
-        .leaflet-popup-content h3 {
-            margin: 0 0 10px 0;
-            color: #1e40af;
-        }
-        
-        .leaflet-popup-content hr {
-            margin: 10px 0;
-            border: none;
-            border-top: 1px solid #e5e7eb;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+      .search-box {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+      .search-box input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        width: 250px;
+      }
+      .legend {
+        position: absolute;
+        bottom: 30px;
+        right: 10px;
+        z-index: 1000;
+        background: white;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        font-size: 12px;
+      }
+      .legend h4 {
+        margin: 0 0 10px 0;
+        font-size: 14px;
+      }
+      .legend-item {
+        margin: 5px 0;
+      }
+      .legend-color {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+        border-radius: 50%;
+        vertical-align: middle;
+      }
     </style>
-</head>
-<body>
-    <header>
-        <h1>🌍 Schools Air Quality Monitoring (MSP3)</h1>
-        <p>Monitoring {{ schools_count }} school{{ schools_count|pluralize }} from Django database with OpenAQ API</p>
-    </header>
+  </head>
+  <body>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search schools..." />
+    </div>
+
+    <div class="legend">
+      <h4>PM10 Levels (µg/m³)</h4>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #00ff00"></span>
+        Good (0-20)
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #ffff00"></span>
+        Moderate (20-40)
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #ff9900"></span>
+        Poor (40-50)
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #ff0000"></span>
+        Very Poor (50+)
+      </div>
+    </div>
 
     <div id="map"></div>
 
-    {% if schools_count == 0 %}
-    <div class="info-box">
-        <h2>No schools registered yet</h2>
-        <p>Add schools via the <a href="{% url 'admin:index' %}">Django admin panel</a>.</p>
-        <p>Then run: <code>python manage.py fetch_air_quality</code></p>
-    </div>
-    {% else %}
-    <div class="info-box">
-        <p>📊 Showing schools from database | 🌐 Pollution data from OpenAQ API</p>
-        <p>Run <code>python manage.py fetch_air_quality</code> to update readings</p>
-    </div>
-    {% endif %}
+    <!-- Embed JSON data using Django's json_script filter -->
+    {{ schools_data|json_script:"schools-data" }}
 
-    <!-- Leaflet JS ONLY - NO script.js -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
     <script>
-        // Initialize map WITHOUT hardcoded center
-        const map = L.map('map');
-        
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+      // Use Django's json_script filter to safely pass data
+
+      const schoolsData = JSON.parse(
+        document.getElementById("schools-data").textContent
+      );
+
+      // DEBUG: Check if schools loaded
+      console.log("Schools loaded:", schoolsData);
+      console.log("Number of schools:", schoolsData.length);
+
+      // Initialize map centered on London/Camberwell area
+      const map = L.map("map").setView([51.48, -0.09], 13);
+
+      // Add OpenStreetMap tiles
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+      }).addTo(map);
+
+      // Store markers for search functionality
+      let markers = [];
+
+      // Function to get color based on PM10 value
+      function getColor(pm10) {
+        if (pm10 === null || pm10 === undefined) return "#808080"; // Gray for no data
+        if (pm10 <= 20) return "#00ff00"; // Green - Good
+        if (pm10 <= 40) return "#ffff00"; // Yellow - Moderate
+        if (pm10 <= 50) return "#ff9900"; // Orange - Poor
+        return "#ff0000"; // Red - Very Poor
+      }
+
+      // Add markers for each school
+      schoolsData.forEach((school) => {
+        console.log("Processing school:", school.name);
+
+        const pm10 = school.readings.PM10;
+        const no2 = school.readings.NO2;
+
+        const color = getColor(pm10);
+
+        const marker = L.circleMarker([school.latitude, school.longitude], {
+          radius: 10,
+          fillColor: color,
+          color: "#000",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8,
         }).addTo(map);
-        
-        // School data from Django database (NOT script.js)
-        const schools = [
-            {% for school in schools %}
-            {
-                name: "{{ school.name|escapejs }}",
-                location: "{{ school.location|escapejs }}",
-                latitude: {{ school.latitude }},
-                longitude: {{ school.longitude }},
-                pm25: {{ school.pm25|default:"null" }},
-                no2: {{ school.no2|default:"null" }}
-            }{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ];
-        
-        console.log('📊 Schools from Django database:', schools);
-        
-        // Function to get marker color based on PM2.5 level (EPA standards)
-        function getMarkerColor(pm25) {
-            if (pm25 === null) return '#9ca3af';  // gray - no data
-            if (pm25 < 12) return '#22c55e';      // green - good
-            if (pm25 < 35.5) return '#fbbf24';    // yellow - moderate
-            if (pm25 < 55.5) return '#fb923c';    // orange - unhealthy for sensitive
-            return '#ef4444';                      // red - unhealthy
+
+        // Popup content
+        let popupContent = `
+              <strong>${school.name}</strong><br>
+              ${school.address}<br><br>
+              <strong>Air Quality:</strong><br>
+          `;
+
+        if (pm10 !== null && pm10 !== undefined) {
+          popupContent += `PM10: ${pm10.toFixed(1)} µg/m³<br>`;
         }
-        
-        // Function to get AQI category text
-        function getAQICategory(pm25) {
-            if (pm25 === null) return 'No data';
-            if (pm25 < 12) return 'Good';
-            if (pm25 < 35.5) return 'Moderate';
-            if (pm25 < 55.5) return 'Unhealthy for Sensitive Groups';
-            return 'Unhealthy';
+        if (no2 !== null && no2 !== undefined) {
+          popupContent += `NO₂: ${no2.toFixed(1)} µg/m³<br>`;
         }
-        
-        // Add markers for each school from database
-        const markers = [];
-        schools.forEach(school => {
-            const color = getMarkerColor(school.pm25);
-            const category = getAQICategory(school.pm25);
-            
-            // Create comprehensive popup content
-            let popupContent = `<h3>${school.name}</h3>`;
-            popupContent += `<p><strong>Location:</strong> ${school.location}</p>`;
-            popupContent += `<p><strong>Coordinates:</strong> ${school.latitude}, ${school.longitude}</p>`;
-            popupContent += `<hr>`;
-            
-            if (school.pm25 !== null) {
-                popupContent += `<p><strong>PM2.5:</strong> ${school.pm25} µg/m³<br>`;
-                popupContent += `<small>Status: ${category}</small></p>`;
-            } else {
-                popupContent += `<p><strong>PM2.5:</strong> No data available</p>`;
-            }
-            
-            if (school.no2 !== null) {
-                popupContent += `<p><strong>NO2:</strong> ${school.no2} µg/m³</p>`;
-            } else {
-                popupContent += `<p><strong>NO2:</strong> No data available</p>`;
-            }
-            
-            popupContent += `<hr>`;
-            popupContent += `<p><small>📡 Data from OpenAQ API</small></p>`;
-            
-            // Create circle marker
-            const marker = L.circleMarker([school.latitude, school.longitude], {
-                radius: 12,
-                fillColor: color,
-                color: '#000',
-                weight: 2,
-                opacity: 1,
-                fillOpacity: 0.8
-            })
-            .addTo(map)
-            .bindPopup(popupContent);
-            
-            markers.push([school.latitude, school.longitude]);
+
+        if (
+          (pm10 === null || pm10 === undefined) &&
+          (no2 === null || no2 === undefined)
+        ) {
+          popupContent += "<em>No recent data available</em>";
+        }
+
+        marker.bindPopup(popupContent);
+
+        // Store marker with school info for search
+        markers.push({
+          marker: marker,
+          school: school,
         });
-        
-        // Auto-fit map to show all schools
-        if (markers.length > 0) {
-            const bounds = L.latLngBounds(markers);
-            map.fitBounds(bounds, { 
-                padding: [50, 50],
-                maxZoom: 14
-            });
-        } else {
-            // Default to London if no schools
-            map.setView([51.5074, -0.1278], 11);
-        }
-        
-        console.log(`✅ Rendered ${markers.length} school marker(s) from database`);
+      });
+
+      console.log("Total markers added:", markers.length);
+
+      // Search functionality
+      const searchInput = document.getElementById("searchInput");
+      searchInput.addEventListener("input", function (e) {
+        const searchTerm = e.target.value.toLowerCase();
+
+        markers.forEach((item) => {
+          const schoolName = item.school.name.toLowerCase();
+          const address = item.school.address.toLowerCase();
+
+          if (searchTerm === "") {
+            item.marker.setStyle({ radius: 10, opacity: 1, fillOpacity: 0.8 });
+          } else if (
+            schoolName.includes(searchTerm) ||
+            address.includes(searchTerm)
+          ) {
+            item.marker.setStyle({ radius: 15, opacity: 1, fillOpacity: 1 });
+            item.marker.openPopup();
+            map.setView([item.school.latitude, item.school.longitude], 15);
+          } else {
+            item.marker.setStyle({ radius: 8, opacity: 0.3, fillOpacity: 0.3 });
+          }
+        });
+      });
     </script>
-</body>
+  </body>
 </html>
