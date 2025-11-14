@@ -32,7 +32,7 @@
 **So that** I can track pollution levels over time (current and historical data)
 
 **Acceptance Criteria:**
-- System stores pollution readings for PM2.5 and NO2
+- System stores pollution readings for PM10 and NO2
 - Each reading is linked to a specific school
 - Each reading has a timestamp of when it was measured
 - System can store unlimited historical readings
@@ -41,7 +41,7 @@
 **Tasks:**
 - [x] Create AirQualityReading model
 - [x] Link readings to schools (ForeignKey relationship)
-- [x] Add pollutant type field (PM2.5, NO2, etc.)
+- [x] Add pollutant type field (PM10, NO2, etc.)
 - [x] Add value field for pollution measurement
 - [x] Add measured_at timestamp field
 - [x] Test reading creation and storage
@@ -61,7 +61,7 @@
 - Calculate and display average pollution over time
 - Identify and display peak (highest) pollution reading
 - Show when peak pollution occurred
-- Support multiple pollutant types (PM2.5, NO2)
+- Support multiple pollutant types (PM10, NO2)
 - Statistics update automatically when new data is added
 
 **Tasks:**
@@ -77,7 +77,7 @@
 
 ---
 
-## Epic 3: Real-Time Data Collection (PLANNED)
+## Epic 3: Real-Time Data Collection
 
 ### US-5: Fetch Real-Time Air Quality Data from API
 **As a** system administrator  
@@ -87,26 +87,27 @@
 **Acceptance Criteria:**
 - System connects to OpenAQ API successfully
 - Data is fetched for schools in the database
-- PM2.5 and NO2 readings are stored correctly
+- PM10 and NO2 readings are stored correctly
 - Readings include timestamp
 - Failed API calls are handled gracefully
 - Duplicate readings are not stored
+- Only fresh data (within 7 days) is displayed
 
 **Tasks:**
-- [ ] Research OpenAQ API endpoints
-- [ ] Write tests for API connection (TDD)
-- [ ] Write tests for data parsing
-- [ ] Write tests for data storage
-- [ ] Create Django management command
-- [ ] Implement API integration
-- [ ] Handle API errors and timeouts
-- [ ] Add logging for monitoring
+- [x] Research OpenAQ API endpoints
+- [x] Implement API connection with requests library
+- [x] Parse JSON response from OpenAQ
+- [x] Store PM10 and NO2 readings in database
+- [x] Handle API errors and timeouts
+- [x] Add rate limiting (1-second delay between requests)
+- [x] Filter stale data (7-day freshness check)
+- [x] Test API integration manually
 
-**Status:** 🔜 NEXT
+**Status:** ✅ COMPLETE
 
 ---
 
-## Epic 4: Interactive Map Visualization (PLANNED)
+## Epic 4: Interactive Map Visualization
 
 ### US-2: View Schools on Interactive Map
 **As a** parent  
@@ -116,18 +117,77 @@
 **Acceptance Criteria:**
 - Map displays all registered schools
 - Each school marker shows school name
-- Clicking a marker shows current pollution level
-- Map is centered on user's location (if available)
-- Map uses OpenStreetMap
+- Clicking a marker shows current pollution level (PM10 and NO2)
+- Map is centered on London/Camberwell area
+- Map uses OpenStreetMap tiles
+- Markers are color-coded by air quality (Good/Moderate/Poor/Very Poor)
+- Map is responsive on mobile devices
 
 **Tasks:**
-- [ ] Integrate Leaflet.js map library
-- [ ] Create map view in Django
-- [ ] Add school markers using latitude/longitude
-- [ ] Create popup windows with school data
-- [ ] Style map markers based on pollution levels
+- [x] Integrate Leaflet.js map library
+- [x] Create map view in Django
+- [x] Add school markers using latitude/longitude
+- [x] Create popup windows with school data
+- [x] Style map markers based on pollution levels
+- [x] Implement color coding (green/orange/red)
+- [x] Add combined PM10 and NO2 air quality index
+- [x] Make map responsive for mobile/tablet
 
-**Status:** 📋 PLANNED
+**Status:** ✅ COMPLETE
+
+---
+
+## Epic 5: User Interface & Search
+
+### US-6: Search for Schools
+**As a** parent  
+**I want to** search for schools by name  
+**So that** I can quickly find air quality information for a specific school
+
+**Acceptance Criteria:**
+- Search box is visible on the map
+- Autocomplete dropdown shows matching schools as I type
+- Selecting a school zooms to its location
+- Search works on both school name and address
+- Search is responsive on mobile devices
+
+**Tasks:**
+- [x] Add search input box to map template
+- [x] Implement autocomplete with HTML5 datalist
+- [x] Add JavaScript search functionality
+- [x] Highlight matching schools while typing
+- [x] Zoom to selected school on exact match
+- [x] Test search on mobile devices
+
+**Status:** ✅ COMPLETE
+
+---
+
+## Epic 6: Data Visualization & UI Polish
+
+### US-8: Display Air Quality with Clear Visual Indicators
+**As a** parent or school administrator  
+**I want to** see clear visual indicators of air quality levels  
+**So that** I can quickly understand if pollution is safe or concerning
+
+**Acceptance Criteria:**
+- Markers use high-contrast colors visible on map
+- Color coding follows UK Air Quality Index standards
+- Popups show both overall air quality and individual pollutants
+- Individual pollutants (PM10 and NO2) have their own status
+- Design is clean and professional
+- Mobile-friendly interface
+
+**Tasks:**
+- [x] Implement UK Air Quality Index color scheme
+- [x] Use high-contrast colors (dark green, orange, red)
+- [x] Create styled popups with color-coded headers
+- [x] Show individual pollutant status in popups
+- [x] Add responsive header with project title
+- [x] Position UI elements to avoid overlap
+- [x] Test on multiple screen sizes
+
+**Status:** ✅ COMPLETE
 
 ---
 
@@ -138,16 +198,19 @@
 | US-1: Register School | 5 tests | ✅ Complete |
 | US-4: Store Readings | 7 tests | ✅ Complete |
 | US-7: View Statistics | 8 tests | ✅ Complete |
-| US-5: API Integration | 0 tests | 🔜 Next |
-| US-2: Map Visualization | 0 tests | 📋 Planned |
+| US-5: API Integration | Manual testing | ✅ Complete |
+| US-2: Map Visualization | Manual testing | ✅ Complete |
+| US-6: Search Functionality | Manual testing | ✅ Complete |
+| US-8: Visual Indicators | Manual testing | ✅ Complete |
 
-**Total Tests:** 20 passing ✅
+**Total Automated Tests:** 20 passing ✅  
+**Manual Testing:** All features tested and verified ✅
 
 ---
 
 ## Development Methodology
 
-This project follows **Test-Driven Development (TDD)**:
+This project follows **Test-Driven Development (TDD)** for backend models:
 
 1. ✅ Write User Story with acceptance criteria
 2. ✅ Write failing tests first (RED phase)
@@ -155,4 +218,49 @@ This project follows **Test-Driven Development (TDD)**:
 4. ✅ Refactor and improve (REFACTOR phase)
 5. ✅ Commit with User Story reference
 
-All completed features have comprehensive automated tests.
+**Backend features** (models, database) have comprehensive automated tests.  
+**Frontend features** (map, search, UI) have been thoroughly manually tested.
+
+---
+
+## Completed Features (MSP3 v1.0)
+
+✅ **6 Schools Registered** - Camberwell/Peckham area  
+✅ **Real-time API Integration** - OpenAQ data fetching  
+✅ **Interactive Map** - Leaflet.js with OpenStreetMap  
+✅ **Color-coded Markers** - UK Air Quality Index standards  
+✅ **Autocomplete Search** - Find schools quickly  
+✅ **Responsive Design** - Works on desktop, tablet, mobile  
+✅ **Detailed Popups** - PM10 and NO2 levels with status  
+✅ **Professional UI** - Gradient header, clean styling  
+
+---
+
+## Future Enhancements (Post-MSP3)
+
+⬜ **PostgreSQL Migration** - Production-ready database  
+⬜ **TimescaleDB Integration** - Time-series data optimization  
+⬜ **LAQN Integration** - London Air Quality Network data  
+⬜ **Historical Charts** - Pollution trends over time  
+⬜ **Email Alerts** - Notifications for poor air quality  
+⬜ **Automated Updates** - Cron jobs for data refresh  
+⬜ **Expanded Coverage** - 50+ schools across London  
+⬜ **Statistical Analysis** - Weekly/monthly averages  
+
+---
+
+## Prototype Status
+
+This is a **working prototype** demonstrating:
+- Django/Python backend development
+- RESTful API integration
+- Database modeling and queries
+- Interactive data visualization
+- Responsive web design
+- Test-Driven Development practices
+
+**Note:** This prototype uses SQLite and manual data refresh. Future versions will migrate to PostgreSQL with automated updates.
+
+---
+
+*Last Updated: November 2024*
