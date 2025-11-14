@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>School Air Quality Map</title>
+    <title>Early Years Schools Pollution Monitor</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
@@ -10,18 +10,39 @@
     />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
         padding: 0;
         font-family: Arial, sans-serif;
       }
+      .header {
+        background: linear-gradient(135deg, #0078a8 0%, #005f87 100%);
+        color: white;
+        padding: 15px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1001;
+        position: relative;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .header p {
+        margin: 5px 0 0 0;
+        font-size: 14px;
+        opacity: 0.9;
+      }
       #map {
-        height: 100vh;
+        height: calc(100vh - 80px);
         width: 100%;
       }
       .search-box {
         position: absolute;
-        top: 10px;
+        top: 95px;
         right: 10px;
         z-index: 1000;
         background: white;
@@ -34,68 +55,85 @@
         border: 1px solid #ccc;
         border-radius: 3px;
         width: 250px;
-      }
-      .legend {
-        position: absolute;
-        bottom: 30px;
-        right: 10px;
-        z-index: 1000;
-        background: white;
-        padding: 15px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        font-size: 12px;
-      }
-      .legend h4 {
-        margin: 0 0 10px 0;
         font-size: 14px;
       }
-      .legend-item {
-        margin: 5px 0;
+      .search-box input:focus {
+        outline: none;
+        border-color: #0078a8;
+        box-shadow: 0 0 5px rgba(0, 120, 168, 0.3);
       }
-      .legend-color {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
-        border-radius: 50%;
-        vertical-align: middle;
+      /* Move Leaflet zoom controls down to avoid search box overlap */
+      .leaflet-top.leaflet-left {
+        top: 95px;
+      }
+
+      /* Mobile Responsive Styles */
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 18px;
+        }
+        .header p {
+          font-size: 12px;
+        }
+        #map {
+          height: calc(100vh - 70px);
+        }
+        .search-box {
+          top: 85px;
+          right: 10px;
+          left: 10px;
+          width: auto;
+        }
+        .search-box input {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header {
+          padding: 10px 15px;
+        }
+        .header h1 {
+          font-size: 16px;
+        }
+        .header p {
+          display: none;
+        }
+        #map {
+          height: calc(100vh - 50px);
+        }
+        .search-box {
+          top: 65px;
+        }
       }
     </style>
   </head>
   <body>
+    <!-- Header Section -->
+    <div class="header">
+      <h1>Early Years Schools Pollution Monitor</h1>
+      <p>Real-time air quality monitoring for London schools</p>
+    </div>
+
+    <!-- Search Box -->
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search schools..." />
+      <input
+        type="text"
+        id="searchInput"
+        list="schoolsList"
+        placeholder="Search schools..."
+        spellcheck="false"
+      />
+      <datalist id="schoolsList"></datalist>
     </div>
 
-    <div class="legend">
-      <h4>PM10 Levels (µg/m³)</h4>
-      <div class="legend-item">
-        <span class="legend-color" style="background: #00ff00"></span>
-        Good (0-20)
-      </div>
-      <div class="legend-item">
-        <span class="legend-color" style="background: #ffff00"></span>
-        Moderate (20-40)
-      </div>
-      <div class="legend-item">
-        <span class="legend-color" style="background: #ff9900"></span>
-        Poor (40-50)
-      </div>
-      <div class="legend-item">
-        <span class="legend-color" style="background: #ff0000"></span>
-        Very Poor (50+)
-      </div>
-    </div>
-
+    <!-- Map Container -->
     <div id="map"></div>
 
     <!-- Embed JSON data using Django's json_script filter -->
     {{ schools_data|json_script:"schools-data" }}
 
     <script>
-      // Use Django's json_script filter to safely pass data
-
       const schoolsData = JSON.parse(
         document.getElementById("schools-data").textContent
       );
@@ -107,22 +145,82 @@
       // Initialize map centered on London/Camberwell area
       const map = L.map("map").setView([51.48, -0.09], 13);
 
-      // Add OpenStreetMap tiles
+      // Add OpenStreetMap tiles with OpenAQ credit
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap contributors",
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Data: <a href="https://openaq.org">OpenAQ</a>',
       }).addTo(map);
 
       // Store markers for search functionality
       let markers = [];
 
-      // Function to get color based on PM10 value
-      function getColor(pm10) {
-        if (pm10 === null || pm10 === undefined) return "#808080"; // Gray for no data
-        if (pm10 <= 20) return "#00ff00"; // Green - Good
-        if (pm10 <= 40) return "#ffff00"; // Yellow - Moderate
-        if (pm10 <= 50) return "#ff9900"; // Orange - Poor
-        return "#ff0000"; // Red - Very Poor
+      // Function to get air quality category based on PM10 levels (UK standards)
+      function getPM10Category(pm10) {
+        if (pm10 === null || pm10 === undefined) return null;
+        if (pm10 <= 20) return 1; // Good
+        if (pm10 <= 40) return 2; // Moderate
+        if (pm10 <= 50) return 3; // Poor
+        return 4; // Very Poor
       }
+
+      // Function to get air quality category based on NO2 levels (UK standards)
+      function getNO2Category(no2) {
+        if (no2 === null || no2 === undefined) return null;
+        if (no2 <= 40) return 1; // Good
+        if (no2 <= 100) return 2; // Moderate
+        if (no2 <= 200) return 3; // Poor
+        return 4; // Very Poor
+      }
+
+      // Function to get overall air quality color based on worst pollutant
+      // Using high-contrast colors that are visible on white map backgrounds
+      function getAirQualityColor(pm10, no2) {
+        const pm10Cat = getPM10Category(pm10);
+        const no2Cat = getNO2Category(no2);
+
+        // If both are null, return gray
+        if (pm10Cat === null && no2Cat === null) return "#808080";
+
+        // Take the worst (highest) category
+        const worstCategory = Math.max(pm10Cat || 0, no2Cat || 0);
+
+        switch (worstCategory) {
+          case 1:
+            return "#00a651"; // Dark Green - Good (better contrast than bright green)
+          case 2:
+            return "#ffa500"; // Orange - Moderate (better contrast than yellow)
+          case 3:
+            return "#ff6b35"; // Orange-Red - Poor
+          case 4:
+            return "#d32f2f"; // Dark Red - Very Poor
+          default:
+            return "#808080"; // Gray - No data
+        }
+      }
+
+      // Function to get category name and color for display
+      function getCategoryInfo(pm10, no2) {
+        const pm10Cat = getPM10Category(pm10);
+        const no2Cat = getNO2Category(no2);
+        const worstCategory = Math.max(pm10Cat || 0, no2Cat || 0);
+
+        const categories = {
+          1: { name: "Good", color: "#00a651" },
+          2: { name: "Moderate", color: "#ffa500" },
+          3: { name: "Poor", color: "#ff6b35" },
+          4: { name: "Very Poor", color: "#d32f2f" },
+        };
+
+        return categories[worstCategory] || { name: "No data", color: "#808080" };
+      }
+
+      // Populate datalist with school names
+      const datalist = document.getElementById("schoolsList");
+      schoolsData.forEach((school) => {
+        const option = document.createElement("option");
+        option.value = school.name;
+        datalist.appendChild(option);
+      });
 
       // Add markers for each school
       schoolsData.forEach((school) => {
@@ -131,41 +229,65 @@
         const pm10 = school.readings.PM10;
         const no2 = school.readings.NO2;
 
-        const color = getColor(pm10);
+        const color = getAirQualityColor(pm10, no2);
+        const categoryInfo = getCategoryInfo(pm10, no2);
+
+        console.log(
+          `  PM10: ${pm10}, NO2: ${no2}, Category: ${categoryInfo.name}, Color: ${color}`
+        );
 
         const marker = L.circleMarker([school.latitude, school.longitude], {
-          radius: 10,
+          radius: 12,
           fillColor: color,
           color: "#000",
-          weight: 1,
+          weight: 2,
           opacity: 1,
-          fillOpacity: 0.8,
+          fillOpacity: 0.85,
         }).addTo(map);
 
-        // Popup content
+        // Popup content with enhanced styling
         let popupContent = `
-              <strong>${school.name}</strong><br>
-              ${school.address}<br><br>
-              <strong>Air Quality:</strong><br>
+              <div style="min-width: 200px;">
+                <strong style="font-size: 16px;">${school.name}</strong><br>
+                <span style="color: #666; font-size: 13px;">${school.address}</span>
+                <hr style="margin: 10px 0; border: none; border-top: 1px solid #ddd;">
+                <div style="background: ${categoryInfo.color}; color: white; padding: 8px; border-radius: 4px; text-align: center; margin-bottom: 10px; font-weight: bold;">
+                  Air Quality: ${categoryInfo.name}
+                </div>
           `;
 
         if (pm10 !== null && pm10 !== undefined) {
-          popupContent += `PM10: ${pm10.toFixed(1)} µg/m³<br>`;
+          const pm10Cat = getPM10Category(pm10);
+          const pm10Info = getCategoryInfo(pm10, null);
+          popupContent += `
+                <div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;">
+                  <strong>PM10:</strong> ${pm10.toFixed(1)} µg/m³ 
+                  <span style="color: ${pm10Info.color}; font-weight: bold;">● ${pm10Info.name}</span>
+                </div>
+          `;
         }
         if (no2 !== null && no2 !== undefined) {
-          popupContent += `NO₂: ${no2.toFixed(1)} µg/m³<br>`;
+          const no2Cat = getNO2Category(no2);
+          const no2Info = getCategoryInfo(null, no2);
+          popupContent += `
+                <div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;">
+                  <strong>NO₂:</strong> ${no2.toFixed(1)} µg/m³ 
+                  <span style="color: ${no2Info.color}; font-weight: bold;">● ${no2Info.name}</span>
+                </div>
+          `;
         }
 
         if (
           (pm10 === null || pm10 === undefined) &&
           (no2 === null || no2 === undefined)
         ) {
-          popupContent += "<em>No recent data available</em>";
+          popupContent += '<em style="color: #999;">No recent data available</em>';
         }
+
+        popupContent += "</div>";
 
         marker.bindPopup(popupContent);
 
-        // Store marker with school info for search
         markers.push({
           marker: marker,
           school: school,
@@ -179,21 +301,49 @@
       searchInput.addEventListener("input", function (e) {
         const searchTerm = e.target.value.toLowerCase();
 
+        // Reset all markers first
         markers.forEach((item) => {
-          const schoolName = item.school.name.toLowerCase();
-          const address = item.school.address.toLowerCase();
+          item.marker.setStyle({ radius: 12, opacity: 1, fillOpacity: 0.85 });
+        });
 
-          if (searchTerm === "") {
-            item.marker.setStyle({ radius: 10, opacity: 1, fillOpacity: 0.8 });
-          } else if (
-            schoolName.includes(searchTerm) ||
-            address.includes(searchTerm)
-          ) {
-            item.marker.setStyle({ radius: 15, opacity: 1, fillOpacity: 1 });
+        if (searchTerm !== "") {
+          markers.forEach((item) => {
+            const schoolName = item.school.name.toLowerCase();
+            const address = item.school.address.toLowerCase();
+
+            if (
+              schoolName.includes(searchTerm) ||
+              address.includes(searchTerm)
+            ) {
+              // Highlight matching schools
+              item.marker.setStyle({ radius: 16, opacity: 1, fillOpacity: 1 });
+
+              // If exact match, zoom to it
+              if (schoolName === searchTerm) {
+                item.marker.openPopup();
+                map.setView([item.school.latitude, item.school.longitude], 15);
+              }
+            } else {
+              // Dim non-matching schools
+              item.marker.setStyle({
+                radius: 10,
+                opacity: 0.3,
+                fillOpacity: 0.3,
+              });
+            }
+          });
+        }
+      });
+
+      // Handle selection from datalist
+      searchInput.addEventListener("change", function (e) {
+        const selectedSchool = e.target.value;
+
+        markers.forEach((item) => {
+          if (item.school.name === selectedSchool) {
+            item.marker.setStyle({ radius: 16, opacity: 1, fillOpacity: 1 });
             item.marker.openPopup();
             map.setView([item.school.latitude, item.school.longitude], 15);
-          } else {
-            item.marker.setStyle({ radius: 8, opacity: 0.3, fillOpacity: 0.3 });
           }
         });
       });
