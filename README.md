@@ -1,328 +1,466 @@
-# Schools Air Quality Monitoring System
+# Early Years Schools Pollution Monitor (MSP3)
 
-A Django web application for monitoring and analyzing air quality data at schools, developed using Test-Driven Development (TDD) methodology.
+A Django-based web application that monitors and visualizes real-time air quality data for early years schools in London. This interactive map displays PM10 and NO2 pollution levels using data from the OpenAQ API.
 
-## Project Overview
+![Project Screenshot](docs/screenshots/map-desktop.png)
 
-This application allows users to:
-- Track air quality readings from multiple schools
-- Store pollution monitoring data
-- Calculate and display average air quality metrics
-- Visualize trends and patterns in school air quality
+**Live Demo:** [Add your deployed link here]
 
-## Technology Stack
+---
 
-- **Framework:** Django 5.2.8
-- **Language:** Python 3.13.0
-- **Database:** SQLite (development)
-- **Testing:** Django's built-in test framework
-- **Development Approach:** Test-Driven Development (TDD)
+## 📖 Table of Contents
 
-## Database Architecture
+- [About](#about)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [User Stories](#user-stories)
+- [Design & Wireframes](#design--wireframes)
+- [Testing](#testing)
+- [Known Limitations](#known-limitations)
+- [Future Enhancements](#future-enhancements)
+- [Credits](#credits)
+- [License](#license)
 
-### Current Implementation
-- **Database:** SQLite3
-- **Rationale:** Simplicity for development and assessment
-- All CRUD operations for schools and air quality readings
-- Supports Django ORM queries for statistics
+---
 
-### Future Scalability Plan
-- **Planned Migration:** PostgreSQL with TimescaleDB extension
-- **Benefits:**
-  - Optimized for time-series pollution data
-  - Automatic data partitioning by time
-  - Fast aggregation queries (hourly/daily averages)
-  - Production-ready scalability
-- **Implementation:** Change database backend in settings.py (5 lines)
-- **Timeline:** Post-MSP3 submission enhancement
+## About
 
-## Air Quality Data Sources
+This is a **prototype application** developed as part of Code Institute's MSP3 (Milestone Project 3) to demonstrate backend development with Django/Python, RESTful API integration, database design, and interactive data visualization.
 
-### Current Implementation (MSP3)
-- **API:** OpenAQ (Open Air Quality)
-- **Endpoint:** https://api.openaq.org/v2/
-- **Coverage:** Global air quality measurements
-- **Rationale:** 
-  - Proof of concept with worldwide applicability
-  - No API key required
-  - Simple integration for TDD development
-  - Assessors can test with any location
+### Project Purpose
 
-### Planned Migration (Final Project)
-- **Primary Source:** London Air Quality Network (LAQN)
-- **API:** https://www.londonair.org.uk/LondonAir/API/
-- **Benefits:**
-  - Official UK government monitoring data
-  - Operated by King's College London & Imperial College
-  - Real monitoring stations (not interpolated)
-  - Hourly granular data for London
-  - Used for regulatory compliance reporting
-- **Fallback:** OpenAQ for schools outside London
-- **Implementation:** Swap API endpoint in fetch command (15 lines of code)
-- **Timeline:** Post-MSP3 enhancement for final project
+Air quality significantly impacts children's health and development. This application provides parents, school administrators, and researchers with accessible, real-time information about pollution levels at early years schools in London.
 
-### Data Accuracy Considerations
+### Project Goals
 
-**OpenAQ (Current):**
-- Aggregates from multiple sources globally
-- May include interpolated values between stations
-- Good for proof-of-concept and broad coverage
+- ✅ Monitor real-time air quality (PM10 and NO2) at early years schools
+- ✅ Provide accessible, visual data through an interactive map
+- ✅ Demonstrate full-stack development skills with Django/Python
+- ✅ Follow Test-Driven Development (TDD) practices
+- ✅ Create a foundation for future production system
 
-**LAQN (Planned):**
-- Direct measurements from calibrated equipment
-- No interpolation - actual readings from specific sites
-- Higher accuracy for London-based schools
-- Official data trusted by researchers and policymakers
+### Future Development
 
-**Why Both?**
-- LAQN for London schools (maximum accuracy)
-- OpenAQ for schools outside London (broad coverage)
-- Demonstrates adaptable architecture
+This prototype serves as a foundation for a more comprehensive system that will include:
 
-## Test-Driven Development Approach
+- Migration to **PostgreSQL** and **TimescaleDB** for time-series data
+- Integration with **London Air Quality Network (LAQN)** for more localized data
+- Historical data analysis and trend visualization
+- Statistical analysis and predictive modeling
+- Email alert system for poor air quality events
+- Expanded school coverage across Greater London
 
-This project follows **TDD principles** throughout development:
+---
 
-### TDD Workflow
+## ✨ Features
 
-1. **Write a failing test** - Define expected behavior before implementation
-2. **Run tests** - Confirm the test fails (Red)
-3. **Write minimal code** - Implement just enough to pass the test
-4. **Run tests again** - Confirm the test passes (Green)
-5. **Refactor** - Improve code while keeping tests green
-6. **Repeat** - Continue cycle for each feature
+### Current Implementation (v1.0)
 
-### Running Tests
+- 🗺️ **Interactive Map** - Leaflet.js-powered map centered on London/Camberwell
+- **6 Schools** - Early years schools in Camberwell/Peckham area
+- **Color-Coded Markers** - Visual indicators based on UK Air Quality Index
+  - 🟢 Good (Dark Green)
+  - 🟠 Moderate (Orange)
+  - 🟠 Poor (Orange-Red)
+  - 🔴 Very Poor (Dark Red)
+- **School Search** - Autocomplete dropdown to find schools quickly
+- **Detailed Popups** - Click markers to see specific PM10 and NO2 levels
+- **Responsive Design** - Works on desktop, tablet, and mobile devices
+- ⏱**Data Freshness** - Only displays readings from the last 7 days
+- **Real-time Data** - Live pollution readings from OpenAQ API
 
-```bash
-# Run all tests
-python manage.py test
+### Air Quality Standards (UK Index)
 
-# Run tests for monitoring app only
-python manage.py test monitoring
+**PM10 Levels:**
 
-# Run specific test file
-python manage.py test monitoring.tests.test_models
+- Good: 0-20 µg/m³
+- Moderate: 21-40 µg/m³
+- Poor: 41-50 µg/m³
+- Very Poor: 50+ µg/m³
 
-# Run with verbose output
-python manage.py test --verbosity=2
-```
+**NO2 Levels:**
 
-### Test Coverage
+- Good: 0-40 µg/m³
+- Moderate: 41-100 µg/m³
+- Poor: 101-200 µg/m³
+- Very Poor: 200+ µg/m³
 
-Tests are organized in the `monitoring/tests/` directory:
+---
 
-```
-monitoring/tests/
-├── __init__.py
-├── test_models.py          # School and AirQualityReading model tests
-├── test_views.py           # View logic and template rendering tests
-├── test_calculations.py    # Data analysis and averaging tests
-└── test_forms.py           # Form validation tests
-```
+## 📸 Screenshots
 
-### Git Commit History
+### Desktop View
 
-The commit history demonstrates TDD workflow:
-- Test commits precede implementation commits
-- Format: "Add test for [feature]" followed by "Implement [feature]"
-- Each feature developed test-first
+![Desktop Map View](docs/screenshots/desktop.png)
+_Interactive map showing color-coded school markers and detailed popup_
 
-Example commit sequence:
-```
-✅ Add test for School model with name and location fields
-✅ Implement School model
-✅ Add test for AirQualityReading model relationships
-✅ Implement AirQualityReading model
-✅ Add test for calculate_average_pollution method
-✅ Implement average pollution calculation
-```
+### Mobile View
+
+![Mobile Map View](docs/screenshots/mobile.png)
+_Responsive design optimized for mobile devices_
+
+### School Detail Popup
+
+![School Popup](docs/screenshots/popup.png)
+_Detailed air quality information with color-coded status indicators_
+
+---
+
+## 🛠️ Technologies Used
+
+### Backend
+
+- **Python 3.12** - Programming language
+- **Django 5.1.3** - Web framework
+- **SQLite3** - Database (development/prototype)
+- **Requests** - HTTP library for API calls
+
+### Frontend
+
+- **HTML5/CSS3** - Structure and styling
+- **JavaScript (ES6)** - Interactive functionality
+- **Leaflet.js 1.9.4** - Interactive mapping library
+- **OpenStreetMap** - Map tiles and data
+
+### APIs & Data Sources
+
+- **OpenAQ API** - Real-time air quality data
+- **Attribution**: Data provided by OpenAQ platform
+
+### Development Tools
+
+- **Git/GitHub** - Version control
+- **VS Code** - IDE
+- **Chrome DevTools** - Testing and debugging
+- **Python unittest** - Test framework
+- **Figma** - Wireframing and UI design
+
+---
 
 ## Installation & Setup
 
 ### Prerequisites
 
-- Python 3.13+
+- Python 3.8 or higher
+- pip (Python package manager)
 - Git
-- pip
 
-### Setup Instructions
+### Local Development Setup
 
 1. **Clone the repository**
+
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/yourusername/Schools_AirQuality_MSP3.git
    cd Schools_AirQuality_MSP3
    ```
 
 2. **Create virtual environment**
+
    ```bash
-   conda deactivate  # if using conda
    python3 -m venv venv
-   source venv/bin/activate
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**
+
    ```bash
-   pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
-4. **Run migrations**
+4. **Set up database**
+
    ```bash
    python manage.py migrate
    ```
 
-5. **Create superuser (optional)**
+5. **Load initial school data**
+
    ```bash
-   python manage.py createsuperuser
+   python manage.py shell
+   # Run the school creation script (see docs/setup.md)
    ```
 
-6. **Run development server**
+6. **Fetch air quality data**
+
+   ```bash
+   python manage.py shell
+   # Run the OpenAQ data fetch script (see docs/api_usage.md)
+   ```
+
+7. **Run development server**
+
    ```bash
    python manage.py runserver
    ```
 
-7. **Access the application**
-   - Application: http://127.0.0.1:8000/
-   - Admin panel: http://127.0.0.1:8000/admin/
-
-## Project Structure
-
-```
-Schools_AirQuality_MSP3/
-├── monitoring/                 # Main application
-│   ├── migrations/            # Database migrations
-│   ├── tests/                 # TDD test suite
-│   ├── models.py              # Data models
-│   ├── views.py               # View logic
-│   ├── forms.py               # Form definitions
-│   └── urls.py                # URL routing
-├── schools_airquality_MSP3/   # Project settings
-│   ├── settings.py            # Django settings
-│   ├── urls.py                # Root URL configuration
-│   └── wsgi.py                # WSGI configuration
-├── static/                    # Static files (CSS, JS)
-├── templates/                 # HTML templates
-├── venv/                      # Virtual environment (not in git)
-├── db.sqlite3                 # Database (not in git)
-├── manage.py                  # Django management script
-├── requirements.txt           # Python dependencies
-├── .gitignore                 # Git ignore rules
-└── README.md                  # This file
-```
-
-## Development Workflow
-
-### Daily Development
-
-```bash
-# Navigate to project
-cd /Users/GK/Documents/vscode-projects/Schools_AirQuality_MSP3
-
-# Activate virtual environment
-conda deactivate              # if (base) appears
-source venv/bin/activate
-
-# Verify correct Python
-which python                  # should show venv/bin/python
-
-# Run tests before making changes
-python manage.py test
-
-# Make changes following TDD cycle
-
-# Run tests again
-python manage.py test
-
-# Run development server
-python manage.py runserver
-```
-
-### Adding a New Feature (TDD Process)
-
-1. **Write the test first**
-   ```python
-   # monitoring/tests/test_models.py
-   def test_school_has_name(self):
-       school = School(name="Test School")
-       self.assertEqual(school.name, "Test School")
-   ```
-
-2. **Run test (should fail)**
-   ```bash
-   python manage.py test monitoring.tests.test_models
-   ```
-
-3. **Write minimal implementation**
-   ```python
-   # monitoring/models.py
-   class School(models.Model):
-       name = models.CharField(max_length=200)
-   ```
-
-4. **Run test (should pass)**
-   ```bash
-   python manage.py test monitoring.tests.test_models
-   ```
-
-5. **Commit with clear message**
-   ```bash
-   git add .
-   git commit -m "Add test for School model name field"
-   git commit -m "Implement School model with name field"
-   ```
-
-## Testing Documentation
-
-### Why TDD for This Project?
-
-- **Data Accuracy:** Air quality calculations must be precise and reliable
-- **Safety:** Tests prevent regressions when adding features
-- **Documentation:** Tests demonstrate how models and views should behave
-- **Confidence:** Comprehensive tests ensure data integrity
-- **Learning:** Demonstrates professional development practices
-
-### Test Examples
-
-See `monitoring/tests/` for examples of:
-- Model validation tests
-- Calculation accuracy tests
-- View response tests
-- Form validation tests
-- Database query tests
-
-## Features (Planned)
-
-- [ ] School registration and management
-- [ ] Air quality data entry
-- [ ] Average pollution calculations
-- [ ] Data visualization (charts/graphs)
-- [ ] Historical data comparison
-- [ ] Export data to CSV
-- [ ] User authentication
-- [ ] Admin dashboard
-
-## Contributing
-
-This is a student project following TDD methodology. All contributions must include tests.
-
-## License
-
-Educational project - [Add license if required]
-
-## Author
-
-GK - Code Institute MSP3 Project
-
-## Acknowledgments
-
-- Code Institute for project requirements
-- Django documentation and community
-- TDD methodology resources
+8. **Access the application**
+   Open browser to `http://127.0.0.1:8000/`
 
 ---
 
-**Note to Assessors:** This project demonstrates TDD principles throughout. Please review:
-1. Git commit history showing test-first development
-2. Test coverage in `monitoring/tests/`
-3. Test output: `python manage.py test monitoring --verbosity=2`
+## Usage
+
+### Viewing Air Quality Data
+
+1. **Browse the Map** - Pan and zoom to explore the area
+2. **Click School Markers** - View detailed pollution information
+3. **Use Search** - Type school name in the search box to quickly locate
+4. **Check Color Coding** - Marker colors indicate overall air quality status
+
+### Understanding the Data
+
+- **Overall Status**: Based on the worst pollutant (PM10 or NO2)
+- **Individual Readings**: Each pollutant shown with its own status
+- **Data Age**: Only readings from the last 7 days are displayed
+
+---
+
+## User Stories
+
+This project follows Agile methodology with user stories developed for each feature. User stories guided the development process and were implemented using Test-Driven Development (TDD) where applicable.
+
+### User Personas
+
+**Parents & Guardians**
+
+- Monitor air quality near their child's school
+- Understand if pollution levels are safe
+- Access information easily on mobile devices
+
+**School Administrators**
+
+- Track pollution levels over time
+- Compare air quality with nearby schools
+- Receive clear visual indicators
+
+**Environmental Health Researchers**
+
+- Access reliable, real-time pollution data
+- Identify schools in high-pollution areas
+- Analyze trends across multiple locations
+
+**Developers & Maintainers**
+
+- Write clean, maintainable code
+- Implement comprehensive testing
+- Follow Django best practices
+
+### Implementation Status
+
+**MSP3 v1.0 (Prototype):** 14/20 user stories complete ✅
+
+- ✅ Core features: Map, search, real-time data, responsive design
+- ⬜ Future features: Automated updates, historical charts, alerts
+
+**[📄 View Complete User Stories with Acceptance Criteria & Tasks →](User_Stories.md)**
+
+---
+
+## Design & Wireframes
+
+Wireframes were created in Figma to plan the user interface and user experience before development. The wireframes include three key views: desktop map, mobile responsive layout, and popup detail.
+
+**[📄 View All Wireframes (PDF - 3 Frames)](docs/wireframes/wireframes.pdf)**
+
+### Wireframe Contents
+
+**Frame 1: Desktop Map View (1920 x 1080)**
+
+- Full-screen interactive map with OpenStreetMap tiles
+- Search box positioned top-right with autocomplete dropdown
+- Zoom controls in top-left corner
+- Color-coded school markers (green/orange/red based on air quality)
+- Sample popup showing detailed air quality data
+- Professional gradient header with project title
+
+**Frame 2: Mobile Responsive View (393 x 852)**
+
+- Full-width search bar optimized for touch interaction
+- Compact header to maximize map viewing area
+- Repositioned zoom controls for thumb accessibility
+- Touch-friendly marker sizes
+- Vertical stacked layout for small screens
+
+**Frame 3: Popup Detail View**
+
+- School name and full address
+- Overall air quality status with color-coded header
+- Individual PM10 reading with status indicator
+- Individual NO2 reading with status indicator
+- Clean, scannable information hierarchy
+
+### Design Evolution
+
+**Changes from wireframe to final implementation:**
+
+- ✅ Removed legend box (information moved to popups for cleaner UI)
+- ✅ Changed bright yellow to orange for better contrast on white map background
+- ✅ Added gradient header (#0078a8 to #005f87) for professional appearance
+- ✅ Enhanced popup styling with color-coded sections and gray backgrounds
+- ✅ Improved mobile spacing to prevent UI element overlap
+- ✅ Increased marker sizes for better touch targeting on mobile devices
+
+---
+
+## 🧪 Testing
+
+### Test-Driven Development (TDD)
+
+This project follows TDD principles with comprehensive unit tests for backend functionality.
+
+**Run all tests:**
+
+```bash
+python manage.py test
+```
+
+**Run specific test:**
+
+```bash
+python manage.py test monitoring.tests.SchoolModelTest
+```
+
+### Test Coverage
+
+| Component               | Tests          | Status      |
+| ----------------------- | -------------- | ----------- |
+| School Model            | 5 unit tests   | ✅ Passing  |
+| AirQualityReading Model | 7 unit tests   | ✅ Passing  |
+| Statistical Methods     | 8 unit tests   | ✅ Passing  |
+| Map View                | Manual testing | ✅ Verified |
+| Search Functionality    | Manual testing | ✅ Verified |
+| Responsive Design       | Manual testing | ✅ Verified |
+
+**Total Automated Tests:** 20 passing ✅  
+**Manual Testing:** All features tested on desktop, tablet (768px), mobile (320px) ✅
+
+### Manual Testing Checklist
+
+- [x] Map loads correctly
+- [x] All 6 schools display as markers
+- [x] Markers show correct colors based on pollution levels
+- [x] Search box autocomplete works
+- [x] Clicking markers opens popups with correct data
+- [x] Mobile responsive design works (320px, 768px, 1024px)
+- [x] Attribution links work
+- [x] Data freshness filter (7 days) working
+
+---
+
+## Current School Coverage
+
+**6 Schools in Camberwell/Peckham Area:**
+
+1. Lyndhurst Primary School
+2. Brunswick Park Primary School
+3. Bellenden Primary School
+4. The Grove Nursery School
+5. Dog Kennel Hill Primary School
+6. Bessemer Grange Primary School
+
+All schools located within ~1.5km of Camberwell air quality monitoring stations.
+
+---
+
+## Data Sources & Attribution
+
+- **Air Quality Data**: [OpenAQ](https://openaq.org) - Open-source air quality data platform
+- **Map Tiles**: [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+- **Mapping Library**: [Leaflet.js](https://leafletjs.com)
+
+### Data Limitations
+
+- Data freshness: Only readings from last 7 days are displayed
+- Coverage: Limited to areas with OpenAQ monitoring stations
+- Update frequency: Dependent on OpenAQ data availability
+- This is a **prototype** - not for critical decision-making
+
+---
+
+## Known Limitations (MSP3 Prototype)
+
+- **Manual Data Refresh** - Requires running Django shell script to fetch new data
+- **SQLite Database** - Not suitable for production (will migrate to PostgreSQL)
+- **Limited Coverage** - Only 6 schools in Camberwell (prototype scope)
+- **No Historical Visualization** - Statistical methods exist but not displayed in UI
+- **No Automated Updates** - Data fetching not scheduled (will add cron jobs)
+- **Basic Error Logging** - No monitoring dashboard (Phase 2)
+
+---
+
+## Future Enhancements (Phase 2)
+
+### Database & Infrastructure
+
+- [ ] Migrate to PostgreSQL
+- [ ] Implement TimescaleDB for time-series data
+- [ ] Set up automated backups
+- [ ] Deploy to cloud platform
+
+### Data Collection
+
+- [ ] Integrate with London Air Quality Network (LAQN)
+- [ ] Create Django management command for automation
+- [ ] Set up cron job for automatic updates
+- [ ] Email notifications for data fetch failures
+
+### Analytics & Visualization
+
+- [ ] Add statistics panel to popups (7-day averages, peaks)
+- [ ] Create interactive charts (Chart.js) for historical trends
+- [ ] Heatmap visualization
+- [ ] Comparison tools between schools
+
+### User Features
+
+- [ ] Email alerts for poor air quality
+- [ ] User accounts and favorites
+- [ ] Export data as CSV/PDF
+- [ ] Share functionality
+
+### Expansion
+
+- [ ] Add 50+ schools across London
+- [ ] Multiple cities support
+- [ ] Additional pollutants (SO2, O3, CO)
+- [ ] Public API for researchers
+
+**[View Detailed Phase 2 Plans →](User_Stories.md#future-enhancements-phase-2---production-version)**
+
+---
+
+## Credits & Acknowledgments
+
+**Development & Mentorship:**
+
+- **Victor Miklovich** - Mentor, for invaluable guidance and support
+- **Code Institute** - Project guidance and curriculum
+
+**Data & Tools:**
+
+- **OpenAQ** - Free, open-source air quality data
+- **OpenStreetMap Contributors** - Map data
+- **Leaflet.js** - Mapping library
+- **Django Community** - Excellent documentation and support
+- **GitHub Copilot** - Development assistance and debugging support
+
+---
+
+## Author
+
+**Gavin Kingcome**
+
+- GitHub: [@gavinkingcome](https://github.com/yourusername)
+- Project Link: [https://github.com/yourusername/Schools_AirQuality_MSP3](https://github.com/yourusername/Schools_AirQuality_MSP3)
+
+---
+
+**Note**: This is a prototype educational project. Air quality data should not be used for critical health or safety decisions. Always refer to official government sources for actionable air quality information.
+
+---
+
+_Last Updated: November 2025_  
+_MSP3 - Code Institute Full Stack Software Development_
