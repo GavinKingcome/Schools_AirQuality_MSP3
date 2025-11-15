@@ -30,11 +30,13 @@ SECRET_KEY = 'django-insecure-cqsq((k230t6m^5vcrzb5i-&q^p#akqjv1z1dabeyv4wyy6qi^
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'msp3-schools-pollution-monitor.herokuapp.com',
-    'msp3-schools-pollution-monitor-*.herokuapp.com',
-]
+        
+        'localhost',
+        '127.0.0.1',
+        'msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com',
+        '.herokuapp.com',  # Allow all herokuapp.com subdomains
+    ]
+
 
 
 # Application definition
