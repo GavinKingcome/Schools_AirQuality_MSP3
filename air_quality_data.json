@@ -1,0 +1,122 @@
+[
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 3,
+  "fields": {
+    "school": 1,
+    "pollutant": "PM10",
+    "value": 19.0,
+    "measured_at": "2025-11-14T00:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 4,
+  "fields": {
+    "school": 1,
+    "pollutant": "NO2",
+    "value": 43.605,
+    "measured_at": "2025-11-14T09:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 6,
+  "fields": {
+    "school": 2,
+    "pollutant": "PM10",
+    "value": 19.0,
+    "measured_at": "2025-11-14T00:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 7,
+  "fields": {
+    "school": 2,
+    "pollutant": "NO2",
+    "value": 43.605,
+    "measured_at": "2025-11-14T09:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 9,
+  "fields": {
+    "school": 3,
+    "pollutant": "PM10",
+    "value": 19.0,
+    "measured_at": "2025-11-14T00:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 10,
+  "fields": {
+    "school": 3,
+    "pollutant": "NO2",
+    "value": 43.605,
+    "measured_at": "2025-11-14T09:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 12,
+  "fields": {
+    "school": 4,
+    "pollutant": "PM10",
+    "value": 19.0,
+    "measured_at": "2025-11-14T00:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 13,
+  "fields": {
+    "school": 4,
+    "pollutant": "NO2",
+    "value": 43.605,
+    "measured_at": "2025-11-14T09:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 15,
+  "fields": {
+    "school": 5,
+    "pollutant": "PM10",
+    "value": 19.0,
+    "measured_at": "2025-11-14T00:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 16,
+  "fields": {
+    "school": 5,
+    "pollutant": "NO2",
+    "value": 43.605,
+    "measured_at": "2025-11-14T09:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 18,
+  "fields": {
+    "school": 6,
+    "pollutant": "PM10",
+    "value": 19.0,
+    "measured_at": "2025-11-14T00:00:00Z"
+  }
+},
+{
+  "model": "monitoring.airqualityreading",
+  "pk": 19,
+  "fields": {
+    "school": 6,
+    "pollutant": "NO2",
+    "value": 43.605,
+    "measured_at": "2025-11-14T09:00:00Z"
+  }
+}
+]
