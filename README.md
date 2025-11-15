@@ -4,6 +4,10 @@ A Django-based web application that monitors and visualizes real-time air qualit
 
 ![Project Screenshot](docs/screenshots/map-desktop.png)
 
+**Live Demo:** [https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/](https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/)
+
+**GitHub Repository:** [https://github.com/GavinKingcome/Schools_AirQuality_MSP3](https://github.com/GavinKingcome/Schools_AirQuality_MSP3)
+
 **Live Demo:** [Add your deployed link here]
 
 ---
