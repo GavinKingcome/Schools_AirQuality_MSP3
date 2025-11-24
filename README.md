@@ -63,17 +63,21 @@ This prototype serves as a foundation for a more comprehensive system that will 
 
 ### Current Implementation (v1.0)
 
+### Current Implementation (v1.0)
+
 - **Interactive Map** - Leaflet.js-powered map centered on London/Camberwell
 - **6 Schools** - Early years schools in Camberwell/Peckham area
 - **Color-Coded Markers** - Visual indicators based on UK Air Quality Index
-  - 🟢 Good (Dark Green)
-  - 🟠 Moderate (Orange)
-  - 🔴 Poor (Dark Red)
 - **School Search** - Autocomplete dropdown to find schools quickly
 - **Detailed Popups** - Click markers to see specific PM10 and NO2 levels
 - **Responsive Design** - Works on desktop, tablet, and mobile devices
-- ⏱**Data Freshness** - Only displays readings from the last 7 days
+- **Data Freshness** - Only displays readings from the last 7 days
 - **Real-time Data** - Live pollution readings from OpenAQ API
+- **Full CRUD Operations** - Create, Read, Update, Delete schools (authentication required)
+- **User Authentication** - Login-protected school management
+- **Form Validation** - Comprehensive validation for all user inputs
+- **Custom Error Pages** - Professional 404 and 500 error pages
+- **Enhanced Admin Interface** - Easy navigation from admin to main site
 
 ### Air Quality Standards (UK Index)
 
@@ -168,6 +172,72 @@ This application provides full **CRUD (Create, Read, Update, Delete)** operation
 - **Messages Framework**: Django's built-in messaging for user feedback
 - **Login Required Decorator**: Authentication enforcement for CUD operations
 
+<!-- Add this after your existing CRUD section and before Screenshots -->
+
+## Error Handling
+
+### Custom Error Pages
+
+The application includes professional, user-friendly error pages that maintain branding and provide helpful navigation when things go wrong.
+
+#### **404 Page Not Found** 
+- **Custom branded design** matching site theme
+- **Helpful message**: "The page you're looking for seems to have wandered off the map"
+- **Navigation buttons** to return to Map or School List
+- **Responsive layout** for all devices
+
+**When it appears:** Visiting non-existent URLs (e.g., `/random-page/`)
+
+#### **500 Server Error** 
+- **User-friendly message** without technical jargon
+- **Reassurance** that the issue is being addressed
+- **Navigation options**: "Go Back" and "Home" buttons
+- **Professional appearance** maintains user trust
+
+**When it appears:** Server-side errors (automatically logged for developers)
+
+### Enhanced Admin Interface 
+
+The Django admin interface has been customized for better user experience:
+
+#### **Custom Navigation**
+- **Quick access buttons** in admin header
+  - 🗺️ "View Map" - Return to main map view
+  - 📋 "Manage Schools" - Go to school list
+- **Consistent branding** across admin and public pages
+- **Seamless navigation** between admin and main site
+
+#### **Fixed Admin Logout**
+- **Custom logout view** handles both GET and POST requests
+- **No 405 errors** - smooth logout experience
+- **Redirects to map** with success message
+- **URL interception** prevents Django admin logout issues
+
+### Technical Implementation
+
+**Error Page Setup:**
+```
+monitoring/templates/
+├── 404.html          # Custom Page Not Found template
+├── 500.html          # Custom Server Error template
+└── admin/
+    └── base_site.html  # Custom admin header
+```
+
+**Security Features:**
+- ✅ DEBUG disabled in production (Heroku)
+- ✅ Error pages don't expose sensitive information
+- ✅ Proper error logging for developers
+- ✅ User-friendly messages for end users
+
+**Admin Customization:**
+- ✅ Custom template extends Django's admin base
+- ✅ Override branding and navigation blocks
+- ✅ Custom logout URL route to prevent errors
+- ✅ Styled to match site theme
+
+---
+
 ## Screenshots
 
 ### Desktop View
@@ -193,6 +263,9 @@ _Detailed air quality information with color-coded status indicators_
 
 - **Python 3.12** - Programming language
 - **Django 5.1.3** - Web framework
+- **Django Forms** - Form handling and validation ✨ NEW
+- **Django Authentication** - User login and permissions ✨ NEW
+- **Django Messages Framework** - User feedback system ✨ NEW
 - **SQLite3** - Database (development/prototype)
 - **Requests** - HTTP library for API calls
 
@@ -417,6 +490,7 @@ python manage.py test monitoring.tests.SchoolModelTest
 
 ### Manual Testing Checklist
 
+**Map & Display:**
 - [x] Map loads correctly
 - [x] All 6 schools display as markers
 - [x] Markers show correct colors based on pollution levels
@@ -425,6 +499,26 @@ python manage.py test monitoring.tests.SchoolModelTest
 - [x] Mobile responsive design works (320px, 768px, 1024px)
 - [x] Attribution links work
 - [x] Data freshness filter (7 days) working
+
+**CRUD Operations:** ✨ NEW
+- [x] View school list shows all schools in table format
+- [x] Add school form validates all required fields
+- [x] Add school creates new entry in database
+- [x] Edit school pre-populates form with existing data
+- [x] Edit school updates database correctly
+- [x] Delete school shows confirmation page
+- [x] Delete school removes entry and associated readings
+- [x] Success messages display after each operation
+- [x] Login required for Create/Update/Delete operations
+- [x] Public users can view map and school list
+
+**Error Handling:** ✨ NEW
+- [x] Custom 404 page displays for non-existent URLs
+- [x] Custom 500 page displays for server errors
+- [x] 404 page includes navigation back to site
+- [x] Error pages match site branding
+- [x] Admin logout works without 405 errors
+- [x] Admin navigation buttons work correctly
 
 ---
 
