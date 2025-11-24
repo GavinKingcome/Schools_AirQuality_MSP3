@@ -12,7 +12,7 @@ A Django-based web application that monitors and visualizes real-time air qualit
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
 - [About](#about)
 - [Features](#features)
@@ -59,17 +59,16 @@ This prototype serves as a foundation for a more comprehensive system that will 
 
 ---
 
-## ✨ Features
+## Features
 
 ### Current Implementation (v1.0)
 
-- 🗺️ **Interactive Map** - Leaflet.js-powered map centered on London/Camberwell
+- **Interactive Map** - Leaflet.js-powered map centered on London/Camberwell
 - **6 Schools** - Early years schools in Camberwell/Peckham area
 - **Color-Coded Markers** - Visual indicators based on UK Air Quality Index
   - 🟢 Good (Dark Green)
   - 🟠 Moderate (Orange)
-  - 🟠 Poor (Orange-Red)
-  - 🔴 Very Poor (Dark Red)
+  - 🔴 Poor (Dark Red)
 - **School Search** - Autocomplete dropdown to find schools quickly
 - **Detailed Popups** - Click markers to see specific PM10 and NO2 levels
 - **Responsive Design** - Works on desktop, tablet, and mobile devices
@@ -94,7 +93,82 @@ This prototype serves as a foundation for a more comprehensive system that will 
 
 ---
 
-## 📸 Screenshots
+## CRUD Functionality 
+
+This application provides full **CRUD (Create, Read, Update, Delete)** operations for school management.
+
+### Features Implemented:
+
+#### **READ (View Data)**
+- **Interactive Map View** (`/`) - View all schools on Leaflet map with pollution markers
+- **School List View** (`/schools/`) - Table view of all schools with details
+- **Color-coded Air Quality** - Visual indicators (Green = Good, Orange = Moderate, Red = Poor)
+
+#### **CREATE (Add New Schools)**
+- **Add School Form** (`/schools/add/`) - Form to add new schools
+- **Required Fields**: School name, full address, latitude, longitude
+- **Form Validation**: All fields validated, coordinates must be valid decimals
+- **User Feedback**: Success messages after adding schools
+- **Authentication Required**: Only logged-in users can add schools
+
+#### **UPDATE (Edit Existing Schools)**
+- **Edit School Form** (`/schools/<id>/edit/`) - Modify school details
+- **Pre-populated Form**: Existing data auto-filled for easy editing
+- **Same Validation**: Ensures data quality on updates
+- **Success Messages**: Confirmation after successful edits
+- **Authentication Required**: Only logged-in users can edit schools
+
+#### **DELETE (Remove Schools)**
+- **Delete Confirmation Page** (`/schools/<id>/delete/`) - Safety confirmation before deletion
+- **Warning Display**: Shows number of pollution readings that will be deleted
+- **Cascade Delete**: Automatically removes associated pollution data
+- **Cancel Option**: Can abort deletion and return to school list
+- **Authentication Required**: Only logged-in users can delete schools
+
+### Access Control
+
+| Action | Public Users | Authenticated Users |
+|--------|--------------|---------------------|
+| View Map | ✅ Yes | ✅ Yes |
+| View School List | ✅ Yes | ✅ Yes |
+| Add School | ❌ No | ✅ Yes |
+| Edit School | ❌ No | ✅ Yes |
+| Delete School | ❌ No | ✅ Yes |
+
+### How to Use:
+
+1. **View Schools**: Visit `/` for map or `/schools/` for list (no login required)
+2. **Login**: Go to `/admin/` and login with admin credentials
+3. **Add School**: Click "Add New School" button or visit `/schools/add/`
+4. **Edit School**: Click "Edit" button next to any school in the list
+5. **Delete School**: Click "Delete" button → Confirm deletion
+
+### Form Validation:
+
+- ✅ All fields are required
+- ✅ Coordinates must be valid decimal numbers
+- ✅ School names validated for uniqueness
+- ✅ Address format validated
+- ✅ Real-time error messages displayed
+
+### User Experience Features:
+
+- **Responsive Design**: Works on mobile, tablet, and desktop
+- **Professional Styling**: Clean, modern UI with consistent branding
+- **Success/Error Messages**: Clear feedback for all actions
+- **Navigation**: Easy movement between map, list, and forms
+- **Help Section**: Instructions for finding coordinates on Google Maps
+
+### Technical Implementation:
+
+- **Django Forms**: ModelForm with custom widgets and validation
+- **Class-Based Logic**: Function-based views with decorators
+- **Template Inheritance**: Consistent navigation across all pages
+- **CSRF Protection**: Secure form submissions
+- **Messages Framework**: Django's built-in messaging for user feedback
+- **Login Required Decorator**: Authentication enforcement for CUD operations
+
+## Screenshots
 
 ### Desktop View
 
@@ -113,7 +187,7 @@ _Detailed air quality information with color-coded status indicators_
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 ### Backend
 
@@ -309,7 +383,7 @@ Wireframes were created in Figma to plan the user interface and user experience 
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Test-Driven Development (TDD)
 
