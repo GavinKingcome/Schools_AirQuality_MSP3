@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error - Schools Pollution Monitor</title>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            color: #dc2626;
+            margin: 0;
+            line-height: 1;
+        }
+        .error-title {
+            font-size: 32px;
+            color: #333;
+            margin: 20px 0;
+        }
+        .error-message {
+            font-size: 18px;
+            color: #666;
+            margin: 20px 0;
+        }
+        .error-actions {
+            margin-top: 40px;
+        }
+        .error-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            background-color: #059669;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        .error-btn:hover {
+            background-color: #047857;
+        }
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h1 class="error-code">500</h1>
+        <h2 class="error-title">Server Error</h2>
+        <p class="error-message">
+            Something went wrong on our end. We've been notified and are working to fix it.
+            <br>Please try again in a few moments.
+        </p>
+        
+        <div class="error-actions">
+            <a href="javascript:history.back()" class="error-btn">
+                ← Go Back
+            </a>
+            <a href="/" class="error-btn">
+                🏠 Home
+            </a>
+        </div>
+    </div>
+</body>
+</html>

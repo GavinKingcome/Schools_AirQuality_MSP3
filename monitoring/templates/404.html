@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Schools Pollution Monitor</title>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            color: #059669;
+            margin: 0;
+            line-height: 1;
+        }
+        .error-title {
+            font-size: 32px;
+            color: #333;
+            margin: 20px 0;
+        }
+        .error-message {
+            font-size: 18px;
+            color: #666;
+            margin: 20px 0;
+        }
+        .error-actions {
+            margin-top: 40px;
+        }
+        .error-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            background-color: #059669;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        .error-btn:hover {
+            background-color: #047857;
+        }
+        .error-btn-secondary {
+            background-color: #6b7280;
+        }
+        .error-btn-secondary:hover {
+            background-color: #4b5563;
+        }
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <h1>Schools Pollution Monitor</h1>
+            <ul>
+                <li><a href="{% url 'map_view' %}">Map</a></li>
+                <li><a href="{% url 'school_list' %}">Schools</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="error-container">
+        <div class="error-icon">🗺️</div>
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Page Not Found</h2>
+        <p class="error-message">
+            Oops! The page you're looking for seems to have wandered off the map.
+            <br>Let's get you back on track!
+        </p>
+        
+        <div class="error-actions">
+            <a href="{% url 'map_view' %}" class="error-btn">
+                🏠 Go to Map
+            </a>
+            <a href="{% url 'school_list' %}" class="error-btn error-btn-secondary">
+                📋 View Schools
+            </a>
+        </div>
+    </div>
+</body>
+</html>

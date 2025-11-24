@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-cqsq((k230t6m^5vcrzb5i-&q^p#akqjv1z1dabeyv4wyy6qi^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 'yes')
 
 ALLOWED_HOSTS = [
         
@@ -68,7 +68,7 @@ ROOT_URLCONF = 'schools_airquality_MSP3.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'monitoring' / 'templates',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
