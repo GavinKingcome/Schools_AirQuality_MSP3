@@ -7,4 +7,4 @@ urlpatterns = [
     path('schools/add/', views.add_school, name='add_school'),
     path('schools/<int:school_id>/edit/', views.edit_school, name='edit_school'),
     path('schools/<int:school_id>/delete/', views.delete_school, name='delete_school'),
-]git status
+]
