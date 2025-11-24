@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Schools - Schools Pollution Monitor</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <h1>Schools Pollution Monitor</h1>
+            <ul>
+                <li><a href="{% url 'map_view' %}">Map</a></li>
+                <li><a href="{% url 'school_list' %}" class="active">Manage Schools</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'add_school' %}">+ Add School</a></li>
+                    <li><a href="/admin/logout/">Logout</a></li>
+                {% else %}
+                    <li><a href="/admin/">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h2>Manage Schools</h2>
+            {% if user.is_authenticated %}
+                <a href="{% url 'add_school' %}" class="btn btn-primary">+ Add New School</a>
+            {% endif %}
+        </div>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if schools %}
+            <table class="school-table">
+                <thead>
+                    <tr>
+                        <th>School Name</th>
+                        <th>Location</th>
+                        <th>Coordinates</th>
+                        <th>Readings</th>
+                        {% if user.is_authenticated %}
+                            <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for school in schools %}
+                        <tr>
+                            <td><strong>{{ school.name }}</strong></td>
+                            <td>{{ school.location }}</td>
+                            <td>{{ school.latitude }}, {{ school.longitude }}</td>
+                            <td>{{ school.readings.count }} reading(s)</td>
+                            {% if user.is_authenticated %}
+                                <td class="actions">
+                                    <a href="{% url 'edit_school' school.id %}" class="btn btn-small btn-edit">Edit</a>
+                                    <a href="{% url 'delete_school' school.id %}" class="btn btn-small btn-delete">Delete</a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state">
+                <p>No schools added yet.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'add_school' %}" class="btn btn-primary">Add Your First School</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </main>
+</body>
+</html>

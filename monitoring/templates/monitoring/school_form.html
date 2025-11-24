@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action }} School - Schools Pollution Monitor</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <h1>Schools Pollution Monitor</h1>
+            <ul>
+                <li><a href="{% url 'map_view' %}">Map</a></li>
+                <li><a href="{% url 'school_list' %}">Manage Schools</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'add_school' %}">+ Add School</a></li>
+                    <li><a href="/admin/logout/">Logout</a></li>
+                {% else %}
+                    <li><a href="/admin/">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h2>{{ action }} School</h2>
+        
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="school-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <span class="error">{{ form.name.errors }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.location.label_tag }}
+                {{ form.location }}
+                {% if form.location.errors %}
+                    <span class="error">{{ form.location.errors }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.latitude.label_tag }}
+                    {{ form.latitude }}
+                    <small>{{ form.latitude.help_text }}</small>
+                    {% if form.latitude.errors %}
+                        <span class="error">{{ form.latitude.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.longitude.label_tag }}
+                    {{ form.longitude }}
+                    <small>{{ form.longitude.help_text }}</small>
+                    {% if form.longitude.errors %}
+                        <span class="error">{{ form.longitude.errors }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">{{ action }} School</button>
+                <a href="{% url 'school_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+
+        <div class="help-box">
+            <h3>💡 How to find coordinates:</h3>
+            <ol>
+                <li>Go to <a href="https://www.google.com/maps" target="_blank">Google Maps</a></li>
+                <li>Find the school location</li>
+                <li>Right-click on the exact spot</li>
+                <li>Click "What's here?"</li>
+                <li>Copy the coordinates (e.g., 51.4743, -0.0689)</li>
+            </ol>
+        </div>
+    </main>
+</body>
+</html>

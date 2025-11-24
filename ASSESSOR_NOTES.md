@@ -41,6 +41,7 @@
 ### Running Automated Tests
 
 **Local Testing:**
+
 ```bash
 # Clone the repository
 git clone https://github.com/GavinKingcome/Schools_AirQuality_MSP3.git
@@ -64,6 +65,7 @@ python manage.py runserver
 ```
 
 **Expected Test Results:**
+
 - 20 unit tests should pass ✅
 - Coverage: School model, AirQualityReading model, statistical methods
 
@@ -98,6 +100,7 @@ Schools_AirQuality_MSP3/
 ## Key Features Demonstrated
 
 ### Backend Development
+
 - **Django 5.2.8** - Modern Python web framework
 - **PostgreSQL** - Production database (Heroku)
 - **SQLite** - Development database
@@ -106,6 +109,7 @@ Schools_AirQuality_MSP3/
 - **ORM Queries** - Complex filtering and aggregation
 
 ### Frontend Development
+
 - **Leaflet.js** - Interactive mapping library
 - **JavaScript ES6** - Modern syntax and features
 - **Responsive CSS** - Mobile-first design
@@ -113,11 +117,13 @@ Schools_AirQuality_MSP3/
 - **DOM Manipulation** - Dynamic content updates
 
 ### Testing
+
 - **Unit Tests** - 20 automated tests covering models and logic
 - **Test-Driven Development** - Tests written before implementation
 - **Manual Testing** - Comprehensive cross-browser/device testing
 
 ### Deployment
+
 - **Heroku Platform** - Cloud hosting
 - **Gunicorn** - Production WSGI server
 - **Whitenoise** - Static file serving
@@ -131,6 +137,7 @@ Schools_AirQuality_MSP3/
 **14 of 20 user stories completed for MSP3 v1.0 prototype:**
 
 ✅ **Core Features (Implemented):**
+
 - View interactive map of schools
 - See color-coded air quality markers
 - Click markers for detailed pollution data
@@ -140,6 +147,7 @@ Schools_AirQuality_MSP3/
 - Understand air quality status at a glance
 
 ⬜ **Future Enhancements (Phase 2):**
+
 - Automated data updates (cron jobs)
 - Historical data visualization (charts)
 - Email alerts for poor air quality
@@ -177,6 +185,7 @@ This is a **prototype/proof-of-concept** for MSP3 assessment:
 ## Technologies Used
 
 **Backend:**
+
 - Python 3.12
 - Django 5.2.8
 - PostgreSQL (production)
@@ -184,12 +193,14 @@ This is a **prototype/proof-of-concept** for MSP3 assessment:
 - Requests library
 
 **Frontend:**
+
 - HTML5/CSS3
 - JavaScript ES6
 - Leaflet.js 1.9.4
 - OpenStreetMap tiles
 
 **Deployment:**
+
 - Heroku
 - Gunicorn
 - Whitenoise
@@ -209,30 +220,35 @@ This is a **prototype/proof-of-concept** for MSP3 assessment:
 ## Assessment Criteria Coverage
 
 ### LO1: Design & Develop a Full-Stack Web Application
+
 ✅ Django-based application with PostgreSQL database
 ✅ RESTful API integration (OpenAQ)
 ✅ Interactive frontend with Leaflet.js
 ✅ Responsive design across devices
 
 ### LO2: Implement Data Model
+
 ✅ Two related models: School and AirQualityReading
 ✅ Foreign key relationships
 ✅ Database migrations
 ✅ CRUD operations
 
 ### LO3: Testing & Documentation
+
 ✅ 20 unit tests with TDD approach
 ✅ Comprehensive README.md
 ✅ User stories with acceptance criteria
 ✅ Wireframes and design documentation
 
 ### LO4: Deployment
+
 ✅ Deployed to Heroku
 ✅ PostgreSQL production database
 ✅ Environment-specific settings
 ✅ Static file serving configured
 
 ### LO5: Version Control
+
 ✅ Git repository with meaningful commits
 ✅ GitHub for code hosting
 ✅ Clear commit history showing development process
@@ -249,4 +265,4 @@ This is a **prototype/proof-of-concept** for MSP3 assessment:
 
 **Thank you for assessing this project!** 🙏
 
-*Last Updated: November 2025*
+_Last Updated: November 2025_
