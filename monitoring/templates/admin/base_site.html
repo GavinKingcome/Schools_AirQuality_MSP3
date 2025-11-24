@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+
+{% block extrahead %}
+<style>
+    /* Custom styles for admin navigation */
+    #site-name a {
+        color: #f5dd5d;
+        text-decoration: none;
+    }
+    #site-name a:hover {
+        color: #ffc;
+    }
+    .back-links {
+        float: right;
+        padding: 10px 0;
+    }
+    .back-links a {
+        color: #fff;
+        background: #059669;
+        padding: 8px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-left: 10px;
+        font-size: 13px;
+        display: inline-block;
+    }
+    .back-links a:hover {
+        background: #047857;
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">Schools Pollution Monitor - Admin</a>
+    </h1>
+    <div class="back-links">
+        <a href="{% url 'map_view' %}">🗺️ View Map</a>
+        <a href="{% url 'school_list' %}">📋 Manage Schools</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block userlinks %}
+    {% if user.is_active and user.is_staff %}
+        <div id="user-tools">
+            Welcome, <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+            <a href="{% url 'map_view' %}">View site</a> /
+            <a href="{% url 'admin:password_change' %}">Change password</a> /
+            <form method="post" action="{% url 'admin:logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; color: #447e9b; cursor: pointer; text-decoration: underline; padding: 0; font: inherit;">
+                    Log out
+                </button>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

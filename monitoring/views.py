@@ -6,6 +6,7 @@ from .models import School, AirQualityReading
 from .forms import SchoolForm
 from datetime import timedelta
 from django.utils import timezone
+from django.contrib.auth import logout
 import json
 
 
@@ -64,6 +65,12 @@ def school_list(request):
         'schools': schools,
     }
     return render(request, 'monitoring/school_list.html', context)
+
+def custom_logout(request):
+    """Custom logout view that handles both GET and POST"""
+    logout(request)
+    messages.success(request, "You have been successfully logged out.")
+    return redirect('map_view')
 
 
 @login_required

@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from monitoring import views  # ADD THIS LINE
 
 urlpatterns = [
+    path('admin/logout/', views.custom_logout, name='admin_logout'),  # ADD THIS LINE - intercept admin logout
     path('admin/', admin.site.urls),
     path('', include('monitoring.urls')),  # Include monitoring app URLs
 ]
