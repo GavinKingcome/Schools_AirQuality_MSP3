@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Schools - Schools Pollution Monitor{% endblock %}
+
+{% block extra_css %}
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .page-header h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    color: #1f2937;
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+  
+  .btn-primary {
+    background: #059669;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: #047857;
+  }
+  
+  .btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .btn-edit {
+    background: #3b82f6;
+    color: white;
+  }
+  
+  .btn-edit:hover {
+    background: #2563eb;
+  }
+  
+  .btn-delete {
+    background: #ef4444;
+    color: white;
+  }
+  
+  .btn-delete:hover {
+    background: #dc2626;
+  }
+  
+  .school-table {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .school-table thead {
+    background: #f3f4f6;
+  }
+  
+  .school-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  
+  .school-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .school-table tbody tr:hover {
+    background: #f9fafb;
+  }
+  
+  .school-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .empty-state p {
+    font-size: 1.125rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .school-table {
+      font-size: 0.875rem;
+    }
+    
+    .school-table th,
+    .school-table td {
+      padding: 0.75rem 0.5rem;
+    }
+    
+    .actions {
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <h2>Manage Schools</h2>
+    {% if user.is_authenticated %}
+      <a href="{% url 'add_school' %}" class="btn btn-primary">+ Add New School</a>
+    {% endif %}
+  </div>
+
+  {% if schools %}
+    <table class="school-table">
+      <thead>
+        <tr>
+          <th>School Name</th>
+          <th>Address</th>
+          <th>Coordinates</th>
+          {% if user.is_authenticated %}
+            <th>Actions</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for school in schools %}
+          <tr>
+            <td><strong>{{ school.name }}</strong></td>
+            <td>{{ school.address }}</td>
+            <td>{{ school.latitude|floatformat:4 }}, {{ school.longitude|floatformat:4 }}</td>
+            {% if user.is_authenticated %}
+              <td class="actions">
+                <a href="{% url 'edit_school' school.id %}" class="btn btn-small btn-edit">Edit</a>
+                <a href="{% url 'delete_school' school.id %}" class="btn btn-small btn-delete">Delete</a>
+              </td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty-state">
+      <p>No schools added yet.</p>
+      {% if user.is_authenticated %}
+        <a href="{% url 'add_school' %}" class="btn btn-primary">Add Your First School</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

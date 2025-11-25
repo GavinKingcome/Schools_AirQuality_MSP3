@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Schools Pollution Monitor{% endblock %}</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  {% block extra_css %}{% endblock %}
+</head>
+<body style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  
+  <!-- Combined Header with Navigation -->
+  <header style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 1.5rem 0; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <!-- Left side - Branding -->
+        <div style="flex: 1; min-width: 250px">
+          <h1 style="margin: 0; font-size: clamp(1.25rem, 3vw, 1.75rem); font-weight: bold;">
+            Schools Pollution Monitor
+          </h1>
+          <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; opacity: 0.9">
+            Real-time Air Quality Data for London Schools
+          </p>
+        </div>
+
+        <!-- Right side - Navigation -->
+        <nav style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <a href="{% url 'map_view' %}" 
+             style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.15); border-radius: 4px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; white-space: nowrap;" 
+             onmouseover="this.style.background='rgba(255,255,255,0.25)'" 
+             onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+            🗺️ Map
+          </a>
+          <a href="{% url 'school_list' %}" 
+             style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.15); border-radius: 4px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; white-space: nowrap;" 
+             onmouseover="this.style.background='rgba(255,255,255,0.25)'" 
+             onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+            📋 Schools
+          </a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'custom_logout' %}" 
+               style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: rgba(220, 38, 38, 0.9); border-radius: 4px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; white-space: nowrap;" 
+               onmouseover="this.style.background='rgba(220, 38, 38, 1)'" 
+               onmouseout="this.style.background='rgba(220, 38, 38, 0.9)'">
+              🚪 Logout
+            </a>
+          {% else %}
+            <a href="{% url 'admin:login' %}" 
+               style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: rgba(5, 150, 105, 0.9); border-radius: 4px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; white-space: nowrap;" 
+               onmouseover="this.style.background='rgba(5, 150, 105, 1)'" 
+               onmouseout="this.style.background='rgba(5, 150, 105, 0.9)'">
+              🔐 Login
+            </a>
+          {% endif %}
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Messages -->
+  {% if messages %}
+  <div style="max-width: 1200px; margin: 1rem auto; padding: 0 1rem">
+    {% for message in messages %}
+    <div style="padding: 1rem; margin-bottom: 1rem; border-radius: 4px; 
+                background: {% if message.tags == 'success' %}#d1fae5{% elif message.tags == 'error' %}#fee2e2{% else %}#dbeafe{% endif %}; 
+                color: {% if message.tags == 'success' %}#065f46{% elif message.tags == 'error' %}#991b1b{% else %}#1e40af{% endif %}; 
+                border-left: 4px solid {% if message.tags == 'success' %}#059669{% elif message.tags == 'error' %}#dc2626{% else %}#3b82f6{% endif %};">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Main content -->
+  <main>{% block content %}{% endblock %}</main>
+
+  <!-- Footer -->
+  <footer style="background: #1f2937; color: white; padding: 2rem 0; margin-top: 4rem;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem; text-align: center;">
+      <p style="margin: 0 0 0.5rem 0">&copy; 2024 Schools Pollution Monitor</p>
+      <p style="margin: 0; font-size: 0.875rem; opacity: 0.8">
+        Data provided by <a href="https://openaq.org" target="_blank" rel="noopener" style="color: #60a5fa; text-decoration: none">OpenAQ</a> | 
+        Map tiles &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style="color: #60a5fa; text-decoration: none">OpenStreetMap</a>
+      </p>
+    </div>
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

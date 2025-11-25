@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete School - Schools Pollution Monitor{% endblock %}
+
+{% block extra_css %}
+<style>
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .delete-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .delete-card h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.75rem;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .warning-box {
+    background: #fef2f2;
+    border: 2px solid #fecaca;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .warning-box p {
+    margin: 0 0 1rem 0;
+    color: #374151;
+  }
+  
+  .warning-box p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .warning-box strong {
+    color: #dc2626;
+  }
+  
+  .warning-text {
+    font-weight: 500;
+    color: #991b1b !important;
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    display: inline-block;
+  }
+  
+  .btn-danger {
+    background: #dc2626;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background: #b91c1c;
+  }
+  
+  .btn-secondary {
+    background: #6b7280;
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background: #4b5563;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="delete-card">
+    <h2><span>⚠️</span> Delete School</h2>
+    
+    <div class="warning-box">
+      <p>Are you sure you want to delete <strong>{{ school.name }}</strong>?</p>
+      <p class="warning-text">
+        This will also delete <strong>{{ school.readings.count }} pollution reading(s)</strong> associated with this school.
+      </p>
+      <p class="warning-text">This action cannot be undone.</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-danger">Yes, Delete School</button>
+        <a href="{% url 'school_list' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

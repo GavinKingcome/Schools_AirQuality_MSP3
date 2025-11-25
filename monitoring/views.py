@@ -54,7 +54,7 @@ def map_view(request):
         'schools_data': schools_data  # Pass Python list directly, not JSON string
     }
     
-    return render(request, 'monitoring/map.html', context)
+    return render(request, 'map.html', context)  # ✅ FIXED
 
 
 def school_list(request):
@@ -64,7 +64,8 @@ def school_list(request):
     context = {
         'schools': schools,
     }
-    return render(request, 'monitoring/school_list.html', context)
+    return render(request, 'school_list.html', context)  # ✅ FIXED
+
 
 def custom_logout(request):
     """Custom logout view that handles both GET and POST"""
@@ -89,7 +90,7 @@ def add_school(request):
         'form': form,
         'action': 'Add',
     }
-    return render(request, 'monitoring/school_form.html', context)
+    return render(request, 'add_school.html', context)  # ✅ FIXED
 
 
 @login_required
@@ -111,7 +112,7 @@ def edit_school(request, school_id):
         'school': school,
         'action': 'Edit',
     }
-    return render(request, 'monitoring/school_form.html', context)
+    return render(request, 'edit_school.html', context)  # ✅ FIXED
 
 
 @login_required
@@ -128,4 +129,4 @@ def delete_school(request, school_id):
     context = {
         'school': school,
     }
-    return render(request, 'monitoring/school_confirm_delete.html', context)
+    return render(request, 'school_confirm_delete.html', context)  # ✅ FIXED

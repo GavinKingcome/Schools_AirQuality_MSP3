@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Add School - Schools Pollution Monitor{% endblock %}
+
+{% block extra_css %}
+<style>
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .form-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-card h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.75rem;
+    color: #1f2937;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    display: inline-block;
+  }
+  
+  .btn-primary {
+    background: #059669;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: #047857;
+  }
+  
+  .btn-secondary {
+    background: #6b7280;
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background: #4b5563;
+  }
+  
+  .error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="form-card">
+    <h2>Add New School</h2>
+    
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="{{ form.name.id_for_label }}">School Name *</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+          <div class="error">{{ form.name.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ form.location.id_for_label }}">Address *</label>
+        {{ form.location }}
+        {% if form.location.errors %}
+          <div class="error">{{ form.location.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ form.latitude.id_for_label }}">Latitude *</label>
+        {{ form.latitude }}
+        {% if form.latitude.errors %}
+          <div class="error">{{ form.latitude.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ form.longitude.id_for_label }}">Longitude *</label>
+        {{ form.longitude }}
+        {% if form.longitude.errors %}
+          <div class="error">{{ form.longitude.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add School</button>
+        <a href="{% url 'school_list' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
