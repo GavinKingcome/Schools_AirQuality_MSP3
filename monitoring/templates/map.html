@@ -68,7 +68,13 @@
 {% block content %}
 <div id="map">
   <div class="search-box">
-    <input type="text" id="searchInput" list="schoolsList" placeholder="Search schools..." spellcheck="false" />
+    <input
+      type="text"
+      id="searchInput"
+      list="schoolsList"
+      placeholder="Search schools..."
+      spellcheck="false"
+    />
     <datalist id="schoolsList"></datalist>
   </div>
 </div>
@@ -77,15 +83,19 @@
 {% endblock %}
 
 {% block extra_js %}
+
 <script>
-  const schoolsData = JSON.parse(document.getElementById("schools-data").textContent);
+  const schoolsData = JSON.parse(
+    document.getElementById("schools-data").textContent
+  );
   console.log("Schools loaded:", schoolsData);
   console.log("Number of schools:", schoolsData.length);
 
   const map = L.map("map").setView([51.48, -0.09], 13);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Data: <a href="https://openaq.org">OpenAQ</a>',
+    attribution:
+      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Data: <a href="https://openaq.org">OpenAQ</a>',
   }).addTo(map);
 
   let markers = [];
@@ -112,11 +122,16 @@
     if (pm10Cat === null && no2Cat === null) return "#808080";
     const worstCategory = Math.max(pm10Cat || 0, no2Cat || 0);
     switch (worstCategory) {
-      case 1: return "#00a651";
-      case 2: return "#ffa500";
-      case 3: return "#ff6b35";
-      case 4: return "#d32f2f";
-      default: return "#808080";
+      case 1:
+        return "#00a651";
+      case 2:
+        return "#ffa500";
+      case 3:
+        return "#ff6b35";
+      case 4:
+        return "#d32f2f";
+      default:
+        return "#808080";
     }
   }
 
@@ -159,14 +174,25 @@
 
     if (pm10 !== null && pm10 !== undefined) {
       const pm10Info = getCategoryInfo(pm10, null);
-      popupContent += `<div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;"><strong>PM10:</strong> ${pm10.toFixed(1)} µg/m³ <span style="color: ${pm10Info.color}; font-weight: bold;">● ${pm10Info.name}</span></div>`;
+      popupContent += `<div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;"><strong>PM10:</strong> ${pm10.toFixed(
+        1
+      )} µg/m³ <span style="color: ${pm10Info.color}; font-weight: bold;">● ${
+        pm10Info.name
+      }</span></div>`;
     }
     if (no2 !== null && no2 !== undefined) {
       const no2Info = getCategoryInfo(null, no2);
-      popupContent += `<div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;"><strong>NO₂:</strong> ${no2.toFixed(1)} µg/m³ <span style="color: ${no2Info.color}; font-weight: bold;">● ${no2Info.name}</span></div>`;
+      popupContent += `<div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;"><strong>NO₂:</strong> ${no2.toFixed(
+        1
+      )} µg/m³ <span style="color: ${no2Info.color}; font-weight: bold;">● ${
+        no2Info.name
+      }</span></div>`;
     }
 
-    if ((pm10 === null || pm10 === undefined) && (no2 === null || no2 === undefined)) {
+    if (
+      (pm10 === null || pm10 === undefined) &&
+      (no2 === null || no2 === undefined)
+    ) {
       popupContent += '<em style="color: #999;">No recent data available</em>';
     }
 
