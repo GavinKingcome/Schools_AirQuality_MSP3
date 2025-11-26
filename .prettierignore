@@ -1,0 +1,4 @@
+# Ignore Django templates
+monitoring/templates/**/*.html
+**/templates/**/*.html
+*.html
