@@ -4,7 +4,7 @@ A Django-based web application that monitors and visualizes real-time air qualit
 
 ![Project Screenshot](docs/screenshots/map-desktop.png)
 
-**Live Demo:** [https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/](https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/)
+**Live Demo (Heroku):** [https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/](https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/)
 
 **GitHub Repository:** [https://github.com/GavinKingcome/Schools_AirQuality_MSP3](https://github.com/GavinKingcome/Schools_AirQuality_MSP3)
 
@@ -334,7 +334,7 @@ Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rur
 ---
 
 #### 2. Mobile Map View
-![Mobile Map Wireframe](docs/wireframes/mobile.png)
+![Mobile Map Wireframe](wireframes/mobile.png)
 
 **Responsive Adjustments:**
 - Search box expands to full-width at top of map
@@ -346,7 +346,7 @@ Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rur
 ---
 
 #### 3. School Management View
-![School List Wireframe](docs/wireframes/school-list.png)
+![School List Wireframe](wireframes/school-list.png)
 
 **Features:**
 - Table/card layout displaying all monitored schools
