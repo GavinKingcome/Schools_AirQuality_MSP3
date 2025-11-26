@@ -9,7 +9,7 @@
     width: 100%;
     position: relative;
   }
-  
+
   .search-box {
     position: absolute;
     top: 10px;
@@ -20,7 +20,7 @@
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   }
-  
+
   .search-box input {
     padding: 8px;
     border: 1px solid #ccc;
@@ -28,26 +28,32 @@
     width: 250px;
     font-size: 14px;
   }
-  
+
   .search-box input:focus {
     outline: none;
     border-color: #0078a8;
     box-shadow: 0 0 5px rgba(0, 120, 168, 0.3);
   }
 
-  /* Mobile Responsive Styles */
   @media (max-width: 768px) {
+    .leaflet-top.leaflet-left {
+      top: 70px !important;
+    }
+
     #map {
       height: calc(100vh - 220px);
     }
+
     .search-box {
       top: 10px;
       left: 10px;
       right: 10px;
       width: auto;
     }
+
     .search-box input {
       width: 100%;
+      box-sizing: border-box;
     }
   }
 
@@ -60,106 +66,73 @@
 {% endblock %}
 
 {% block content %}
-<!-- Map Container with Search Box Inside -->
 <div id="map">
   <div class="search-box">
-    <input
-      type="text"
-      id="searchInput"
-      list="schoolsList"
-      placeholder="Search schools..."
-      spellcheck="false"
-    />
+    <input type="text" id="searchInput" list="schoolsList" placeholder="Search schools..." spellcheck="false" />
     <datalist id="schoolsList"></datalist>
   </div>
 </div>
 
-<!-- Embed JSON data using Django's json_script filter -->
 {{ schools_data|json_script:"schools-data" }}
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  const schoolsData = JSON.parse(
-    document.getElementById("schools-data").textContent
-  );
-
-  // DEBUG: Check if schools loaded
+  const schoolsData = JSON.parse(document.getElementById("schools-data").textContent);
   console.log("Schools loaded:", schoolsData);
   console.log("Number of schools:", schoolsData.length);
 
-  // Initialize map centered on London/Camberwell area
   const map = L.map("map").setView([51.48, -0.09], 13);
 
-  // Add OpenStreetMap tiles with OpenAQ credit
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Data: <a href="https://openaq.org">OpenAQ</a>',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Data: <a href="https://openaq.org">OpenAQ</a>',
   }).addTo(map);
 
-  // Store markers for search functionality
   let markers = [];
 
-  // Function to get air quality category based on PM10 levels (UK standards)
   function getPM10Category(pm10) {
     if (pm10 === null || pm10 === undefined) return null;
-    if (pm10 <= 20) return 1; // Good
-    if (pm10 <= 40) return 2; // Moderate
-    if (pm10 <= 50) return 3; // Poor
-    return 4; // Very Poor
+    if (pm10 <= 20) return 1;
+    if (pm10 <= 40) return 2;
+    if (pm10 <= 50) return 3;
+    return 4;
   }
 
-  // Function to get air quality category based on NO2 levels (UK standards)
   function getNO2Category(no2) {
     if (no2 === null || no2 === undefined) return null;
-    if (no2 <= 40) return 1; // Good
-    if (no2 <= 100) return 2; // Moderate
-    if (no2 <= 200) return 3; // Poor
-    return 4; // Very Poor
+    if (no2 <= 40) return 1;
+    if (no2 <= 100) return 2;
+    if (no2 <= 200) return 3;
+    return 4;
   }
 
-  // Function to get overall air quality color based on worst pollutant
   function getAirQualityColor(pm10, no2) {
     const pm10Cat = getPM10Category(pm10);
     const no2Cat = getNO2Category(no2);
-
-    // If both are null, return gray
     if (pm10Cat === null && no2Cat === null) return "#808080";
-
-    // Take the worst (highest) category
     const worstCategory = Math.max(pm10Cat || 0, no2Cat || 0);
-
     switch (worstCategory) {
-      case 1:
-        return "#00a651"; // Dark Green - Good
-      case 2:
-        return "#ffa500"; // Orange - Moderate
-      case 3:
-        return "#ff6b35"; // Orange-Red - Poor
-      case 4:
-        return "#d32f2f"; // Dark Red - Very Poor
-      default:
-        return "#808080"; // Gray - No data
+      case 1: return "#00a651";
+      case 2: return "#ffa500";
+      case 3: return "#ff6b35";
+      case 4: return "#d32f2f";
+      default: return "#808080";
     }
   }
 
-  // Function to get category name and color for display
   function getCategoryInfo(pm10, no2) {
     const pm10Cat = getPM10Category(pm10);
     const no2Cat = getNO2Category(no2);
     const worstCategory = Math.max(pm10Cat || 0, no2Cat || 0);
-
     const categories = {
       1: { name: "Good", color: "#00a651" },
       2: { name: "Moderate", color: "#ffa500" },
       3: { name: "Poor", color: "#ff6b35" },
       4: { name: "Very Poor", color: "#d32f2f" },
     };
-
     return categories[worstCategory] || { name: "No data", color: "#808080" };
   }
 
-  // Populate datalist with school names
   const datalist = document.getElementById("schoolsList");
   schoolsData.forEach((school) => {
     const option = document.createElement("option");
@@ -167,19 +140,11 @@
     datalist.appendChild(option);
   });
 
-  // Add markers for each school
   schoolsData.forEach((school) => {
-    console.log("Processing school:", school.name);
-
     const pm10 = school.readings.PM10;
     const no2 = school.readings.NO2;
-
     const color = getAirQualityColor(pm10, no2);
     const categoryInfo = getCategoryInfo(pm10, no2);
-
-    console.log(
-      `  PM10: ${pm10}, NO2: ${no2}, Category: ${categoryInfo.name}, Color: ${color}`
-    );
 
     const marker = L.circleMarker([school.latitude, school.longitude], {
       radius: 12,
@@ -190,61 +155,29 @@
       fillOpacity: 0.85,
     }).addTo(map);
 
-    // Popup content with enhanced styling
-    let popupContent = `
-          <div style="min-width: 200px;">
-            <strong style="font-size: 16px;">${school.name}</strong><br>
-            <span style="color: #666; font-size: 13px;">${school.address}</span>
-            <hr style="margin: 10px 0; border: none; border-top: 1px solid #ddd;">
-            <div style="background: ${categoryInfo.color}; color: white; padding: 8px; border-radius: 4px; text-align: center; margin-bottom: 10px; font-weight: bold;">
-              Air Quality: ${categoryInfo.name}
-            </div>
-      `;
+    let popupContent = `<div style="min-width: 200px;"><strong style="font-size: 16px;">${school.name}</strong><br><span style="color: #666; font-size: 13px;">${school.address}</span><hr style="margin: 10px 0; border: none; border-top: 1px solid #ddd;"><div style="background: ${categoryInfo.color}; color: white; padding: 8px; border-radius: 4px; text-align: center; margin-bottom: 10px; font-weight: bold;">Air Quality: ${categoryInfo.name}</div>`;
 
     if (pm10 !== null && pm10 !== undefined) {
       const pm10Info = getCategoryInfo(pm10, null);
-      popupContent += `
-            <div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;">
-              <strong>PM10:</strong> ${pm10.toFixed(1)} µg/m³ 
-              <span style="color: ${pm10Info.color}; font-weight: bold;">● ${pm10Info.name}</span>
-            </div>
-      `;
+      popupContent += `<div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;"><strong>PM10:</strong> ${pm10.toFixed(1)} µg/m³ <span style="color: ${pm10Info.color}; font-weight: bold;">● ${pm10Info.name}</span></div>`;
     }
     if (no2 !== null && no2 !== undefined) {
       const no2Info = getCategoryInfo(null, no2);
-      popupContent += `
-            <div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;">
-              <strong>NO₂:</strong> ${no2.toFixed(1)} µg/m³ 
-              <span style="color: ${no2Info.color}; font-weight: bold;">● ${no2Info.name}</span>
-            </div>
-      `;
+      popupContent += `<div style="margin: 8px 0; padding: 6px; background: #f5f5f5; border-radius: 3px;"><strong>NO₂:</strong> ${no2.toFixed(1)} µg/m³ <span style="color: ${no2Info.color}; font-weight: bold;">● ${no2Info.name}</span></div>`;
     }
 
-    if (
-      (pm10 === null || pm10 === undefined) &&
-      (no2 === null || no2 === undefined)
-    ) {
+    if ((pm10 === null || pm10 === undefined) && (no2 === null || no2 === undefined)) {
       popupContent += '<em style="color: #999;">No recent data available</em>';
     }
 
     popupContent += "</div>";
-
     marker.bindPopup(popupContent);
-
-    markers.push({
-      marker: marker,
-      school: school,
-    });
+    markers.push({ marker: marker, school: school });
   });
 
-  console.log("Total markers added:", markers.length);
-
-  // Search functionality
   const searchInput = document.getElementById("searchInput");
   searchInput.addEventListener("input", function (e) {
     const searchTerm = e.target.value.toLowerCase();
-
-    // Reset all markers first
     markers.forEach((item) => {
       item.marker.setStyle({ radius: 12, opacity: 1, fillOpacity: 0.85 });
     });
@@ -253,35 +186,21 @@
       markers.forEach((item) => {
         const schoolName = item.school.name.toLowerCase();
         const address = item.school.address.toLowerCase();
-
-        if (
-          schoolName.includes(searchTerm) ||
-          address.includes(searchTerm)
-        ) {
-          // Highlight matching schools
+        if (schoolName.includes(searchTerm) || address.includes(searchTerm)) {
           item.marker.setStyle({ radius: 16, opacity: 1, fillOpacity: 1 });
-
-          // If exact match, zoom to it
           if (schoolName === searchTerm) {
             item.marker.openPopup();
             map.setView([item.school.latitude, item.school.longitude], 15);
           }
         } else {
-          // Dim non-matching schools
-          item.marker.setStyle({
-            radius: 10,
-            opacity: 0.3,
-            fillOpacity: 0.3,
-          });
+          item.marker.setStyle({ radius: 10, opacity: 0.3, fillOpacity: 0.3 });
         }
       });
     }
   });
 
-  // Handle selection from datalist
   searchInput.addEventListener("change", function (e) {
     const selectedSchool = e.target.value;
-
     markers.forEach((item) => {
       if (item.school.name === selectedSchool) {
         item.marker.setStyle({ radius: 16, opacity: 1, fillOpacity: 1 });
