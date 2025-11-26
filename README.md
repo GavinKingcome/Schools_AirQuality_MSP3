@@ -257,6 +257,143 @@ _Detailed air quality information with color-coded status indicators_
 
 ---
 
+## UX Design
+
+### Design Philosophy
+
+The Early Years Schools Pollution Monitor was designed with **simplicity, accessibility, and data clarity** in mind:
+
+- **Mobile-first responsive design** - Ensures usability across all devices
+- **Clear visual hierarchy** - Professional blue gradient header with intuitive navigation
+- **Intuitive data visualization** - Color-coded markers for instant air quality assessment
+- **Real-time search** - Interactive search highlights matching schools dynamically
+- **Accessibility** - High contrast ratios, touch-friendly buttons, semantic HTML
+
+---
+
+### User Stories
+
+#### **As a Parent/Guardian:**
+- ✅ I want to quickly see air quality levels near schools so I can make informed decisions about my child's exposure
+- ✅ I want to search for specific schools to check their current air quality readings
+- ✅ I want clear visual indicators (colors) so I can understand air quality at a glance without technical knowledge
+- ✅ I want the site to work on my mobile phone while I'm on the go
+
+#### **As a School Administrator:**
+- ✅ I want to add new schools to the monitoring system
+- ✅ I want to update school information easily when addresses change
+- ✅ I want to view all monitored schools in one organized list
+- ✅ I want to remove schools that are no longer relevant
+
+#### **As a Researcher/Environmental Analyst:**
+- ✅ I want to see detailed PM10 and NO₂ levels for each school location
+- ✅ I want to compare air quality across different schools and areas
+- ✅ I want access to recent, reliable data from the OpenAQ API
+- ✅ I want to identify schools in areas with poor air quality for further study
+
+---
+
+### Color Scheme
+
+Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rural Affairs)** standards:
+
+| Color | Air Quality Level | PM10 Range | NO₂ Range | Meaning |
+|-------|-------------------|------------|-----------|---------|
+| 🟢 **Green** (#00a651) | Good | ≤20 µg/m³ | ≤40 µg/m³ | Low pollution, suitable for all outdoor activities |
+| 🟠 **Orange** (#ffa500) | Moderate | 21-40 µg/m³ | 41-100 µg/m³ | Acceptable quality, some sensitive individuals may experience issues |
+| 🔴 **Red** (#d32f2f) | Very Poor | >50 µg/m³ | >200 µg/m³ | Health warnings, everyone may experience effects |
+
+**Header Colors:**
+- Primary blue: `#1e3a8a` to `#3b82f6` (gradient)
+- Logout button: `#dc2626` (red)
+- Login button: `#059669` (green)
+
+---
+
+### Typography & Spacing
+
+- **Font Family**: System fonts (`-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto`) for optimal performance
+- **Responsive Text**: Scales appropriately across all screen sizes
+- **Touch Targets**: Minimum 44×44px for mobile usability (WCAG 2.1 AAA)
+- **Consistent Spacing**: Uses rem units for scalability
+
+---
+
+### Wireframes
+
+#### 1. Desktop Map View
+![Desktop Map Wireframe](docs/wireframes/desktop.png)
+
+**Key Features:**
+- Full-width interactive map with color-coded school markers
+- Search box positioned top-right for easy access
+- Leaflet zoom controls top-left
+- Professional blue gradient header with navigation
+- Responsive layout adapts to browser width
+
+---
+
+#### 2. Mobile Map View
+![Mobile Map Wireframe](docs/wireframes/mobile.png)
+
+**Responsive Adjustments:**
+- Search box expands to full-width at top of map
+- Zoom controls repositioned 70px below search to avoid overlap
+- Map height adjusted for optimal mobile viewing
+- Touch-friendly navigation buttons
+- Stacked layout for smaller screens
+
+---
+
+#### 3. School Management View
+![School List Wireframe](docs/wireframes/school-list.png)
+
+**Features:**
+- Table/card layout displaying all monitored schools
+- "Add School" button prominently placed
+- Edit/Delete actions for each school entry
+- Consistent header and navigation across all pages
+- Responsive table design for mobile devices
+
+---
+
+### Accessibility Considerations
+
+- **Keyboard Navigation**: All interactive elements are fully keyboard-accessible
+- **Color Contrast**: Meets WCAG AA standards for text and UI components
+- **Touch Targets**: Minimum 44×44px tap targets for mobile usability
+- **Focus Indicators**: Clear visual feedback when navigating with keyboard
+- **Semantic HTML**: Proper heading hierarchy and ARIA labels where needed
+- **Responsive Images**: Wireframes and map markers scale appropriately
+
+---
+
+### Responsive Breakpoints
+
+```css
+/* Mobile: < 480px */
+/* Tablet: 481px - 768px */
+/* Desktop: > 768px */
+```
+
+**Mobile-specific optimizations:**
+- Full-width search input with `box-sizing: border-box`
+- Adjusted map height for better viewing
+- Repositioned zoom controls to prevent overlap
+- Touch-friendly button sizes (min 44px)
+
+---
+
+### Future UX Enhancements
+
+- [ ] Filtering by air quality level (show only "Poor" or "Very Poor" schools)
+- [ ] Data export functionality (CSV/PDF reports)
+- [ ] Historical data charts for each school location
+- [ ] Email/SMS alerts for poor air quality readings
+- [ ] Dark mode theme option
+- [ ] Multi-language support (starting with common London languages)
+- [ ] Comparison view (side-by-side school air quality)
+
 ## Technologies Used
 
 ### Backend
@@ -625,8 +762,8 @@ All schools located within ~1.5km of Camberwell air quality monitoring stations.
 
 **Gavin Kingcome**
 
-- GitHub: [@gavinkingcome](https://github.com/yourusername)
-- Project Link: [https://github.com/yourusername/Schools_AirQuality_MSP3](https://github.com/yourusername/Schools_AirQuality_MSP3)
+- GitHub: [@gavinkingcome](https://github.com/GavinKingcome)
+- Project Link: [https://github.com/GavinKingcome/Schools_AirQuality_MSP3](https://github.com/GavinKingcome/Schools_AirQuality_MSP3)
 
 ---
 
