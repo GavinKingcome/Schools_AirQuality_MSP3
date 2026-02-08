@@ -1,21 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, logout
 from .models import School, AirQualityReading
 from .forms import SchoolForm
-from datetime import timedelta
-from django.utils import timezone
-from django.contrib.auth import logout
-import json
 
 
 def map_view(request):
     """Display interactive map with schools and pollution data - US-READ"""
     schools = School.objects.all()
-    
-    # DEBUG: Print school count
-    print(f"DEBUG: Found {schools.count()} schools")
     
     schools_data = []
     for school in schools:
@@ -41,14 +35,7 @@ def map_view(request):
             }
         }
         
-        # DEBUG: Print each school
-        print(f"DEBUG: Adding {school.name} at ({school.latitude}, {school.longitude})")
-        
         schools_data.append(school_dict)
-    
-    # DEBUG: Print final JSON
-    print(f"DEBUG: Total schools in JSON: {len(schools_data)}")
-    print(f"DEBUG: JSON data: {json.dumps(schools_data, indent=2)}")
     
     context = {
         'schools_data': schools_data  # Pass Python list directly, not JSON string
@@ -73,6 +60,23 @@ def custom_logout(request):
     messages.success(request, "You have been successfully logged out.")
     return redirect('map_view')
 
+def signup_view(request):
+    """User signup view"""
+    if request.user.is_authenticated:
+        return redirect('map_view')
+    
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, f'Welcome, {user.username}! Your account has been created successfully.')
+            return redirect('map_view')
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'registration/signup.html', {'form': form})
+
 
 @login_required
 def add_school(request):
@@ -80,7 +84,9 @@ def add_school(request):
     if request.method == 'POST':
         form = SchoolForm(request.POST)
         if form.is_valid():
-            school = form.save()
+            school = form.save(commit=False)
+            school.created_by = request.user
+            school.save()
             messages.success(request, f'✓ {school.name} has been added successfully!')
             return redirect('map_view')  # Redirect to map
     else:
@@ -97,6 +103,10 @@ def add_school(request):
 def edit_school(request, school_id):
     """Edit existing school details - US-UPDATE"""
     school = get_object_or_404(School, id=school_id)
+    
+    if school.created_by != request.user:
+       messages.error(request, "You can only edit schools that you added.")
+       return redirect('school_list')
     
     if request.method == 'POST':
         form = SchoolForm(request.POST, instance=school)
@@ -119,6 +129,10 @@ def edit_school(request, school_id):
 def delete_school(request, school_id):
     """Delete a school - US-DELETE"""
     school = get_object_or_404(School, id=school_id)
+    
+    if school.created_by != request.user:
+       messages.error(request, "You can only delete schools that you added.")
+       return redirect('school_list')
     
     if request.method == 'POST':
         school_name = school.name

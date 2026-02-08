@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class School(models.Model):
     """A school that we're monitoring - US-1"""
@@ -6,6 +7,8 @@ class School(models.Model):
     location = models.CharField(max_length=200)
     latitude = models.FloatField()
     longitude = models.FloatField()
+    
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='schools')
     
     def get_latest_reading(self, pollutant="PM2.5"):
         """Get most recent pollution reading for a specific pollutant"""
