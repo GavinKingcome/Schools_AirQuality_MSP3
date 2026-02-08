@@ -2,13 +2,9 @@
 
 A Django-based web application that monitors and visualizes real-time air quality data for early years schools in London. This interactive map displays PM10 and NO2 pollution levels using data from the OpenAQ API.
 
-![Project Screenshot](docs/screenshots/map-desktop.png)
-
 **Live Demo (Heroku):** [https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/](https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/)
 
 **GitHub Repository:** [https://github.com/GavinKingcome/Schools_AirQuality_MSP3](https://github.com/GavinKingcome/Schools_AirQuality_MSP3)
-
-**Live Demo:** [Add your deployed link here]
 
 ---
 
@@ -63,8 +59,6 @@ This prototype serves as a foundation for a more comprehensive system that will 
 
 ### Current Implementation (v1.0)
 
-### Current Implementation (v1.0)
-
 - **Interactive Map** - Leaflet.js-powered map centered on London/Camberwell
 - **6 Schools** - Early years schools in Camberwell/Peckham area
 - **Color-Coded Markers** - Visual indicators based on UK Air Quality Index
@@ -97,18 +91,20 @@ This prototype serves as a foundation for a more comprehensive system that will 
 
 ---
 
-## CRUD Functionality 
+## CRUD Functionality
 
 This application provides full **CRUD (Create, Read, Update, Delete)** operations for school management.
 
 ### Features Implemented:
 
 #### **READ (View Data)**
+
 - **Interactive Map View** (`/`) - View all schools on Leaflet map with pollution markers
 - **School List View** (`/schools/`) - Table view of all schools with details
 - **Color-coded Air Quality** - Visual indicators (Green = Good, Orange = Moderate, Red = Poor)
 
 #### **CREATE (Add New Schools)**
+
 - **Add School Form** (`/schools/add/`) - Form to add new schools
 - **Required Fields**: School name, full address, latitude, longitude
 - **Form Validation**: All fields validated, coordinates must be valid decimals
@@ -116,6 +112,7 @@ This application provides full **CRUD (Create, Read, Update, Delete)** operation
 - **Authentication Required**: Only logged-in users can add schools
 
 #### **UPDATE (Edit Existing Schools)**
+
 - **Edit School Form** (`/schools/<id>/edit/`) - Modify school details
 - **Pre-populated Form**: Existing data auto-filled for easy editing
 - **Same Validation**: Ensures data quality on updates
@@ -123,6 +120,7 @@ This application provides full **CRUD (Create, Read, Update, Delete)** operation
 - **Authentication Required**: Only logged-in users can edit schools
 
 #### **DELETE (Remove Schools)**
+
 - **Delete Confirmation Page** (`/schools/<id>/delete/`) - Safety confirmation before deletion
 - **Warning Display**: Shows number of pollution readings that will be deleted
 - **Cascade Delete**: Automatically removes associated pollution data
@@ -131,13 +129,13 @@ This application provides full **CRUD (Create, Read, Update, Delete)** operation
 
 ### Access Control
 
-| Action | Public Users | Authenticated Users |
-|--------|--------------|---------------------|
-| View Map | ✅ Yes | ✅ Yes |
-| View School List | ✅ Yes | ✅ Yes |
-| Add School | ❌ No | ✅ Yes |
-| Edit School | ❌ No | ✅ Yes |
-| Delete School | ❌ No | ✅ Yes |
+| Action           | Public Users | Authenticated Users |
+| ---------------- | ------------ | ------------------- |
+| View Map         | ✅ Yes       | ✅ Yes              |
+| View School List | ✅ Yes       | ✅ Yes              |
+| Add School       | ❌ No        | ✅ Yes              |
+| Edit School      | ❌ No        | ✅ Yes              |
+| Delete School    | ❌ No        | ✅ Yes              |
 
 ### How to Use:
 
@@ -180,7 +178,8 @@ This application provides full **CRUD (Create, Read, Update, Delete)** operation
 
 The application includes professional, user-friendly error pages that maintain branding and provide helpful navigation when things go wrong.
 
-#### **404 Page Not Found** 
+#### **404 Page Not Found**
+
 - **Custom branded design** matching site theme
 - **Helpful message**: "The page you're looking for seems to have wandered off the map"
 - **Navigation buttons** to return to Map or School List
@@ -188,7 +187,8 @@ The application includes professional, user-friendly error pages that maintain b
 
 **When it appears:** Visiting non-existent URLs (e.g., `/random-page/`)
 
-#### **500 Server Error** 
+#### **500 Server Error**
+
 - **User-friendly message** without technical jargon
 - **Reassurance** that the issue is being addressed
 - **Navigation options**: "Go Back" and "Home" buttons
@@ -196,11 +196,12 @@ The application includes professional, user-friendly error pages that maintain b
 
 **When it appears:** Server-side errors (automatically logged for developers)
 
-### Enhanced Admin Interface 
+### Enhanced Admin Interface
 
 The Django admin interface has been customized for better user experience:
 
 #### **Custom Navigation**
+
 - **Quick access buttons** in admin header
   - 🗺️ "View Map" - Return to main map view
   - 📋 "Manage Schools" - Go to school list
@@ -208,6 +209,7 @@ The Django admin interface has been customized for better user experience:
 - **Seamless navigation** between admin and main site
 
 #### **Fixed Admin Logout**
+
 - **Custom logout view** handles both GET and POST requests
 - **No 405 errors** - smooth logout experience
 - **Redirects to map** with success message
@@ -216,6 +218,7 @@ The Django admin interface has been customized for better user experience:
 ### Technical Implementation
 
 **Error Page Setup:**
+
 ```
 monitoring/templates/
 ├── 404.html          # Custom Page Not Found template
@@ -225,12 +228,14 @@ monitoring/templates/
 ```
 
 **Security Features:**
+
 - ✅ DEBUG disabled in production (Heroku)
 - ✅ Error pages don't expose sensitive information
 - ✅ Proper error logging for developers
 - ✅ User-friendly messages for end users
 
 **Admin Customization:**
+
 - ✅ Custom template extends Django's admin base
 - ✅ Override branding and navigation blocks
 - ✅ Custom logout URL route to prevent errors
@@ -274,18 +279,21 @@ The Early Years Schools Pollution Monitor was designed with **simplicity, access
 ### User Stories
 
 #### **As a Parent/Guardian:**
+
 - ✅ I want to quickly see air quality levels near schools so I can make informed decisions about my child's exposure
 - ✅ I want to search for specific schools to check their current air quality readings
 - ✅ I want clear visual indicators (colors) so I can understand air quality at a glance without technical knowledge
 - ✅ I want the site to work on my mobile phone while I'm on the go
 
 #### **As a School Administrator:**
+
 - ✅ I want to add new schools to the monitoring system
 - ✅ I want to update school information easily when addresses change
 - ✅ I want to view all monitored schools in one organized list
 - ✅ I want to remove schools that are no longer relevant
 
 #### **As a Researcher/Environmental Analyst:**
+
 - ✅ I want to see detailed PM10 and NO₂ levels for each school location
 - ✅ I want to compare air quality across different schools and areas
 - ✅ I want access to recent, reliable data from the OpenAQ API
@@ -297,13 +305,14 @@ The Early Years Schools Pollution Monitor was designed with **simplicity, access
 
 Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rural Affairs)** standards:
 
-| Color | Air Quality Level | PM10 Range | NO₂ Range | Meaning |
-|-------|-------------------|------------|-----------|---------|
-| 🟢 **Green** (#00a651) | Good | ≤20 µg/m³ | ≤40 µg/m³ | Low pollution, suitable for all outdoor activities |
-| 🟠 **Orange** (#ffa500) | Moderate | 21-40 µg/m³ | 41-100 µg/m³ | Acceptable quality, some sensitive individuals may experience issues |
-| 🔴 **Red** (#d32f2f) | Very Poor | >50 µg/m³ | >200 µg/m³ | Health warnings, everyone may experience effects |
+| Color                   | Air Quality Level | PM10 Range  | NO₂ Range    | Meaning                                                              |
+| ----------------------- | ----------------- | ----------- | ------------ | -------------------------------------------------------------------- |
+| 🟢 **Green** (#00a651)  | Good              | ≤20 µg/m³   | ≤40 µg/m³    | Low pollution, suitable for all outdoor activities                   |
+| 🟠 **Orange** (#ffa500) | Moderate          | 21-40 µg/m³ | 41-100 µg/m³ | Acceptable quality, some sensitive individuals may experience issues |
+| 🔴 **Red** (#d32f2f)    | Very Poor         | >50 µg/m³   | >200 µg/m³   | Health warnings, everyone may experience effects                     |
 
 **Header Colors:**
+
 - Primary blue: `#1e3a8a` to `#3b82f6` (gradient)
 - Logout button: `#dc2626` (red)
 - Login button: `#059669` (green)
@@ -322,9 +331,11 @@ Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rur
 ### Wireframes
 
 #### 1. Desktop Map View
-![Desktop Map Wireframe](docs/wireframes/desktop.png)
+
+![Desktop Map Wireframe](wireframes/desktop.png)
 
 **Key Features:**
+
 - Full-width interactive map with color-coded school markers
 - Search box positioned top-right for easy access
 - Leaflet zoom controls top-left
@@ -334,9 +345,11 @@ Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rur
 ---
 
 #### 2. Mobile Map View
+
 ![Mobile Map Wireframe](wireframes/mobile.png)
 
 **Responsive Adjustments:**
+
 - Search box expands to full-width at top of map
 - Zoom controls repositioned 70px below search to avoid overlap
 - Map height adjusted for optimal mobile viewing
@@ -346,9 +359,11 @@ Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rur
 ---
 
 #### 3. School Management View
+
 ![School List Wireframe](wireframes/school-list.png)
 
 **Features:**
+
 - Table/card layout displaying all monitored schools
 - "Add School" button prominently placed
 - Edit/Delete actions for each school entry
@@ -377,6 +392,7 @@ Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rur
 ```
 
 **Mobile-specific optimizations:**
+
 - Full-width search input with `box-sizing: border-box`
 - Adjusted map height for better viewing
 - Repositioned zoom controls to prevent overlap
@@ -551,35 +567,6 @@ This project follows Agile methodology with user stories developed for each feat
 
 Wireframes were created in Figma to plan the user interface and user experience before development. The wireframes include three key views: desktop map, mobile responsive layout, and popup detail.
 
-**[📄 View All Wireframes (PDF - 3 Frames)](docs/wireframes/wireframes.pdf)**
-
-### Wireframe Contents
-
-**Frame 1: Desktop Map View (1920 x 1080)**
-
-- Full-screen interactive map with OpenStreetMap tiles
-- Search box positioned top-right with autocomplete dropdown
-- Zoom controls in top-left corner
-- Color-coded school markers (green/orange/red based on air quality)
-- Sample popup showing detailed air quality data
-- Professional gradient header with project title
-
-**Frame 2: Mobile Responsive View (393 x 852)**
-
-- Full-width search bar optimized for touch interaction
-- Compact header to maximize map viewing area
-- Repositioned zoom controls for thumb accessibility
-- Touch-friendly marker sizes
-- Vertical stacked layout for small screens
-
-**Frame 3: Popup Detail View**
-
-- School name and full address
-- Overall air quality status with color-coded header
-- Individual PM10 reading with status indicator
-- Individual NO2 reading with status indicator
-- Clean, scannable information hierarchy
-
 ### Design Evolution
 
 **Changes from wireframe to final implementation:**
@@ -628,6 +615,7 @@ python manage.py test monitoring.tests.SchoolModelTest
 ### Manual Testing Checklist
 
 **Map & Display:**
+
 - [x] Map loads correctly
 - [x] All 6 schools display as markers
 - [x] Markers show correct colors based on pollution levels
@@ -638,6 +626,7 @@ python manage.py test monitoring.tests.SchoolModelTest
 - [x] Data freshness filter (7 days) working
 
 **CRUD Operations:** ✨ NEW
+
 - [x] View school list shows all schools in table format
 - [x] Add school form validates all required fields
 - [x] Add school creates new entry in database
@@ -650,6 +639,7 @@ python manage.py test monitoring.tests.SchoolModelTest
 - [x] Public users can view map and school list
 
 **Error Handling:** ✨ NEW
+
 - [x] Custom 404 page displays for non-existent URLs
 - [x] Custom 500 page displays for server errors
 - [x] 404 page includes navigation back to site
@@ -700,7 +690,14 @@ All schools located within ~1.5km of Camberwell air quality monitoring stations.
 
 ---
 
-## Future Enhancements (Phase 2)
+## Future Enhancements
+
+- [ ] **Database caching with scheduled updates**
+  - Store air quality readings in database
+  - Use `fetch_air_quality` management command
+  - Schedule with Heroku Scheduler (hourly/daily)
+  - Improves page load speed
+  - Reduces API dependency
 
 ### Database & Infrastructure
 

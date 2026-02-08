@@ -149,7 +149,7 @@
       <thead>
         <tr>
           <th>School Name</th>
-          <th>Address</th>
+          <th>Location</th>
           <th>Coordinates</th>
           {% if user.is_authenticated %}
             <th>Actions</th>
@@ -160,7 +160,7 @@
         {% for school in schools %}
           <tr>
             <td><strong>{{ school.name }}</strong></td>
-            <td>{{ school.address }}</td>
+            <td>{{ school.location }}</td>
             <td>{{ school.latitude|floatformat:4 }}, {{ school.longitude|floatformat:4 }}</td>
             {% if user.is_authenticated %}
               <td class="actions">

@@ -170,7 +170,7 @@
       fillOpacity: 0.85,
     }).addTo(map);
 
-    let popupContent = `<div style="min-width: 200px;"><strong style="font-size: 16px;">${school.name}</strong><br><span style="color: #666; font-size: 13px;">${school.address}</span><hr style="margin: 10px 0; border: none; border-top: 1px solid #ddd;"><div style="background: ${categoryInfo.color}; color: white; padding: 8px; border-radius: 4px; text-align: center; margin-bottom: 10px; font-weight: bold;">Air Quality: ${categoryInfo.name}</div>`;
+    let popupContent = `<div style="min-width: 200px;"><strong style="font-size: 16px;">${school.name}</strong><br><span style="color: #666; font-size: 13px;">${school.location}</span><hr style="margin: 10px 0; border: none; border-top: 1px solid #ddd;"><div style="background: ${categoryInfo.color}; color: white; padding: 8px; border-radius: 4px; text-align: center; margin-bottom: 10px; font-weight: bold;">Air Quality: ${categoryInfo.name}</div>`;
 
     if (pm10 !== null && pm10 !== undefined) {
       const pm10Info = getCategoryInfo(pm10, null);
@@ -211,8 +211,8 @@
     if (searchTerm !== "") {
       markers.forEach((item) => {
         const schoolName = item.school.name.toLowerCase();
-        const address = item.school.address.toLowerCase();
-        if (schoolName.includes(searchTerm) || address.includes(searchTerm)) {
+        const location = item.school.location.toLowerCase();
+        if (schoolName.includes(searchTerm) || location.includes(searchTerm)) {
           item.marker.setStyle({ radius: 16, opacity: 1, fillOpacity: 1 });
           if (schoolName === searchTerm) {
             item.marker.openPopup();
