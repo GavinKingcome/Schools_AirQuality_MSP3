@@ -830,6 +830,7 @@ All HTML pages validated using the [W3C Markup Validation Service](https://valid
 **Method:** Validate by URI (fetches rendered Django templates from live Heroku site)
 
 **Pages Validated:**
+
 - ✅ Map View (Landing Page) - `https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/`
 - ✅ School List - `/schools/`
 - ✅ Add School Form - `/schools/add/`
@@ -839,17 +840,20 @@ All HTML pages validated using the [W3C Markup Validation Service](https://valid
 **Result:** ✅ **No errors or warnings** - Document checking completed successfully
 
 **Key Fixes Applied:**
+
 - Ensured `<!DOCTYPE html>` is first element (Django template load tags moved)
 - Removed trailing slashes from void elements (`<meta>`, `<link>`, `<input>`)
 - Proper HTML5 structure maintained
 
-_Screenshot: Add W3C HTML validation pass screenshot showing "No errors or warnings"_
+![HTML Validation Pass](validation/HTML_validation.png)
+_W3C HTML Validator - No errors or warnings found_
 
 #### CSS Validation (W3C CSS Validator)
 
 CSS validated using the [W3C CSS Validation Service](https://jigsaw.w3.org/css-validator/).
 
 **File Validated:**
+
 - ✅ `static/assets/css/style.css` - Custom stylesheet
 
 **Method:** Validate by direct input
@@ -858,13 +862,15 @@ CSS validated using the [W3C CSS Validation Service](https://jigsaw.w3.org/css-v
 
 **Note:** External libraries (Leaflet CSS) not validated as they are third-party maintained.
 
-_Screenshot: Add W3C CSS validation pass screenshot_
+![CSS Validation Pass](validation/CSS_validation.png)
+_W3C CSS Validator - Valid CSS with no errors_
 
 #### Python Code Quality (PEP8)
 
 Python code follows PEP 8 style guidelines.
 
 **Files Checked:**
+
 - ✅ `monitoring/views.py` - All view functions
 - ✅ `monitoring/models.py` - Model definitions
 - ✅ `monitoring/forms.py` - Form classes
