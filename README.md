@@ -427,6 +427,17 @@ Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rur
 - **Semantic HTML**: Proper heading hierarchy and ARIA labels where needed
 - **Responsive Images**: Wireframes and map markers scale appropriately
 
+### Accessibility Testing
+
+The following checks were performed on the deployed site:
+
+- **Form Labels**: All form inputs (login, signup, add/edit school) have associated `<label>` elements linked via `for` attributes
+- **Keyboard Navigation**: All pages can be navigated using Tab and Shift+Tab, including the navigation bar, form fields, and action buttons
+- **Focus States**: Interactive elements show visible focus outlines when navigated via keyboard (blue box-shadow on form inputs, browser default outlines on links and buttons)
+- **Colour Contrast**: Header text (white on blue gradient) and body text (dark on white) meet WCAG AA contrast requirements
+- **Semantic HTML**: Pages use `<header>`, `<nav>`, `<main>`, and `<footer>` elements for proper document structure
+- **Form Feedback**: Error messages are displayed inline next to the relevant field, and success messages appear in a visible banner below the header
+
 ---
 
 ### Responsive Breakpoints
