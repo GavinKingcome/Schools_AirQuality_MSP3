@@ -819,6 +819,59 @@ python manage.py test monitoring.tests.SchoolModelTest
 - [x] Admin logout works without 405 errors
 - [x] Admin navigation buttons work correctly
 
+### Code Validation
+
+All code has been validated using industry-standard validators to ensure quality and standards compliance.
+
+#### HTML Validation (W3C Nu Html Checker)
+
+All HTML pages validated using the [W3C Markup Validation Service](https://validator.w3.org/).
+
+**Method:** Validate by URI (fetches rendered Django templates from live Heroku site)
+
+**Pages Validated:**
+- ✅ Map View (Landing Page) - `https://msp3-schools-pollution-monitor-88e7f4d84e34.herokuapp.com/`
+- ✅ School List - `/schools/`
+- ✅ Add School Form - `/schools/add/`
+- ✅ Login Page - `/login/`
+- ✅ Signup Page - `/signup/`
+
+**Result:** ✅ **No errors or warnings** - Document checking completed successfully
+
+**Key Fixes Applied:**
+- Ensured `<!DOCTYPE html>` is first element (Django template load tags moved)
+- Removed trailing slashes from void elements (`<meta>`, `<link>`, `<input>`)
+- Proper HTML5 structure maintained
+
+_Screenshot: Add W3C HTML validation pass screenshot showing "No errors or warnings"_
+
+#### CSS Validation (W3C CSS Validator)
+
+CSS validated using the [W3C CSS Validation Service](https://jigsaw.w3.org/css-validator/).
+
+**File Validated:**
+- ✅ `static/assets/css/style.css` - Custom stylesheet
+
+**Method:** Validate by direct input
+
+**Result:** ✅ **Valid CSS** - No errors found
+
+**Note:** External libraries (Leaflet CSS) not validated as they are third-party maintained.
+
+_Screenshot: Add W3C CSS validation pass screenshot_
+
+#### Python Code Quality (PEP8)
+
+Python code follows PEP 8 style guidelines.
+
+**Files Checked:**
+- ✅ `monitoring/views.py` - All view functions
+- ✅ `monitoring/models.py` - Model definitions
+- ✅ `monitoring/forms.py` - Form classes
+- ✅ `management/commands/fetch_air_quality.py` - Data fetching command
+
+**Result:** ✅ No significant PEP 8 violations
+
 ---
 
 ## Current School Coverage
@@ -859,7 +912,7 @@ All schools located within ~1.5km of Camberwell air quality monitoring stations.
 - **No Historical Visualization** - Statistical methods exist but not displayed in UI
 - **No Automated Updates** - Data fetching not scheduled (will add cron jobs)
 - **Basic Error Logging** - No monitoring dashboard (Phase 2)
-- **Shared Readings** - Schools within the same area share readings from the nearest OpenAQ monitoring    station, so values may be identical across nearby schools
+- **Shared Readings** - Schools within the same area share readings from the nearest OpenAQ monitoring station, so values may be identical across nearby schools
 
 ---
 
