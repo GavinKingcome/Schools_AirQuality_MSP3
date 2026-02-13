@@ -638,6 +638,9 @@ heroku open
 - Static files (CSS, JavaScript) load correctly
 - DEBUG is off (no detailed error pages shown to users)
 
+![Heroku Deployment Success](validation/Heroku_validation.png)
+*Live site successfully deployed and accessible on Heroku*
+
 ### 8. Fetch Air Quality Data (if needed)
 
 ```bash
