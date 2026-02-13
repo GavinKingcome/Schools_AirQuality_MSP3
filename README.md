@@ -12,9 +12,13 @@ A Django-based web application that monitors and visualizes real-time air qualit
 
 - [About](#about)
 - [Features](#features)
+- [Database Schema](#database-schema)
+- [Design Rationale](#design-rationale)
 - [Screenshots](#screenshots)
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
+- [Deployment](#deployment)
+- [Security considerations](#security-considerations)
 - [Usage](#usage)
 - [User Stories](#user-stories)
 - [Design & Wireframes](#design--wireframes)
@@ -33,6 +37,50 @@ This is a **prototype application** developed as part of Code Institute's MSP3 (
 ### Project Purpose
 
 Air quality significantly impacts children's health and development. This application provides parents, school administrators, and researchers with accessible, real-time information about pollution levels at early years schools in London.
+
+## Database Schema
+
+### Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    USER ||--o{ SCHOOL : "created_by"
+    SCHOOL ||--o{ AIR_QUALITY_READING : "has many"
+
+    USER {
+        int id PK
+        string username
+        string password
+        string email
+    }
+
+    SCHOOL {
+        int id PK
+        string name
+        string location
+        float latitude
+        float longitude
+        int created_by FK
+    }
+
+    AIR_QUALITY_READING {
+        int id PK
+        int school FK
+        string pollutant
+        float value
+        datetime measured_at
+    }
+```
+
+### Design Rationale
+
+The database uses two custom models alongside Django's built-in User model:
+
+**School** stores each monitored school's name, location, and coordinates. The `created_by` field links to the User who added the school, enabling ownership checks on edit and delete operations. Coordinates are stored as separate `latitude` and `longitude` float fields to support the Leaflet.js map integration.
+
+**AirQualityReading** stores individual pollution measurements linked to a school via a foreign key. The `pollutant` field uses predefined choices (PM2.5, PM10, NO2, O3, SO2) to ensure data consistency. Readings are ordered by `measured_at` (most recent first) to support displaying the latest data. The `on_delete=CASCADE` relationship means that when a school is deleted, all its associated readings are automatically removed.
+
+This structure supports the core requirement of displaying current air quality data per school on the map, while keeping the schema simple enough for the prototype scope. Future development would add models for historical trend data, user alerts, and multiple data sources.
 
 ### Project Goals
 
@@ -127,20 +175,18 @@ This application provides full **CRUD (Create, Read, Update, Delete)** operation
 - **Cancel Option**: Can abort deletion and return to school list
 - **Authentication Required**: Only logged-in users can delete schools
 
-### Access Control
-
-| Action           | Public Users | Authenticated Users |
-| ---------------- | ------------ | ------------------- |
-| View Map         | ✅ Yes       | ✅ Yes              |
-| View School List | ✅ Yes       | ✅ Yes              |
-| Add School       | ❌ No        | ✅ Yes              |
-| Edit School      | ❌ No        | ✅ Yes              |
-| Delete School    | ❌ No        | ✅ Yes              |
+| Action           | Public Users | Authenticated Users | Owner Only |
+| ---------------- | ------------ | ------------------- | ---------- |
+| View Map         | ✅ Yes       | ✅ Yes              | —          |
+| View School List | ✅ Yes       | ✅ Yes              | —          |
+| Add School       | ❌ No        | ✅ Yes              | —          |
+| Edit School      | ❌ No        | ❌ No               | ✅ Yes     |
+| Delete School    | ❌ No        | ❌ No               | ✅ Yes     |
 
 ### How to Use:
 
 1. **View Schools**: Visit `/` for map or `/schools/` for list (no login required)
-2. **Login**: Go to `/admin/` and login with admin credentials
+2. **Login**: Click "Login" or "Sign Up" in the navigation bar
 3. **Add School**: Click "Add New School" button or visit `/schools/add/`
 4. **Edit School**: Click "Edit" button next to any school in the list
 5. **Delete School**: Click "Delete" button → Confirm deletion
@@ -503,7 +549,117 @@ Air quality indicators follow **UK DEFRA (Department for Environment, Food & Rur
 8. **Access the application**
    Open browser to `http://127.0.0.1:8000/`
 
+## Deployment
+
+This project is deployed on [Heroku](https://heroku.com). Follow these steps to deploy your own instance.
+
+### Prerequisites
+
+- A [Heroku account](https://signup.heroku.com/)
+- [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) installed
+- Git installed and project committed to a repository
+
+### 1. Create a Heroku App
+
+```bash
+heroku login
+heroku create schools_airquality_msp3
+```
+
+### 2. Set Configuration Variables
+
+Set the required environment variables on Heroku (see `.env.example` for reference):
+
+```bash
+heroku config:set SECRET_KEY="your-secret-key-here"
+heroku config:set DEBUG="False"
+heroku config:set OPEN_AQ_API_KEY="your-openaq-api-key"
+```
+
+> **Note:** `DATABASE_URL` is automatically set when the Heroku PostgreSQL add-on is provisioned.
+
+### 3. Verify Configuration Files
+
+Ensure the following files are present and correctly configured:
+
+- **Procfile** — tells Heroku how to run the app: `web: gunicorn schools_airquality_MSP3.wsgi`
+- **runtime.txt** — specifies Python version: `python-3.12.0`
+- **requirements.txt** — all dependencies including `gunicorn`, `dj-database-url`, `whitenoise`, and `python-dotenv`
+- **settings.py** — `SECRET_KEY` loaded from environment variable, `DEBUG` set to `False` in production, `ALLOWED_HOSTS` includes `.herokuapp.com`
+
+### 4. Deploy to Heroku
+
+```bash
+heroku git:remote -a your-app-name
+git add .
+git commit -m "Prepare for Heroku deployment"
+git push heroku main
+```
+
+### 5. Set Up the Database
+
+```bash
+heroku run python manage.py migrate
+heroku run python manage.py createsuperuser
+```
+
+### 6. Collect Static Files
+
+Static files are collected automatically during deployment via WhiteNoise. If needed, run manually:
+
+```bash
+heroku run python manage.py collectstatic --noinput
+```
+
+### 7. Verify Deployment
+
+```bash
+heroku open
+```
+
+**Check the following on the live site:**
+
+- Home page loads with interactive map
+- School markers display with air quality data
+- Signup, login, and logout work correctly
+- Add, edit, and delete school functions work for authenticated users
+- Ownership checks prevent editing/deleting other users' schools
+- Static files (CSS, JavaScript) load correctly
+- DEBUG is off (no detailed error pages shown to users)
+
+### 8. Fetch Air Quality Data (if needed)
+
+```bash
+heroku run python manage.py fetch_air_quality
+```
+
 ---
+
+## Security Considerations
+
+### Secret Key Management
+
+The Django `SECRET_KEY` is stored as an environment variable, not in the codebase. A `.env.example` file documents the required environment variables without exposing actual values. Locally, `python-dotenv` loads variables from a `.env` file which is excluded from version control via `.gitignore`.
+
+### Authentication
+
+User authentication is handled through Django's built-in auth framework. Users can sign up, log in, and log out through dedicated user-facing pages — the Django admin login is not used for regular users. The `@login_required` decorator protects all create, edit, and delete operations.
+
+### Authorisation and Ownership
+
+Ownership checks ensure users can only edit or delete schools they created. Each school has a `created_by` field linked to the user who added it. If a user attempts to modify another user's school, they are redirected with an error message.
+
+### CSRF Protection
+
+All forms include Django's `{% csrf_token %}` template tag, and the `CsrfViewMiddleware` is active in the middleware stack. This prevents cross-site request forgery attacks on form submissions.
+
+### DEBUG Setting
+
+`DEBUG` is set to `False` in production via an environment variable, ensuring that sensitive information such as stack traces, settings, and database queries are never exposed to end users. Custom 404 and 500 error pages are displayed instead.
+
+### ALLOWED_HOSTS
+
+The `ALLOWED_HOSTS` setting restricts which domains can serve the application, preventing HTTP Host header attacks. Only `localhost`, `127.0.0.1`, and the Heroku app domain are permitted.
 
 ## Usage
 
@@ -586,11 +742,15 @@ Wireframes were created in Figma to plan the user interface and user experience 
 
 This project follows TDD principles with comprehensive unit tests for backend functionality.
 
+> **Note:** API integration tests were initially written using TDD but were removed during refactoring as the fetch command architecture changed from individual functions to a single management command. Future development would include updated integration tests for the v3 API.
+
+````
+
 **Run all tests:**
 
 ```bash
 python manage.py test
-```
+````
 
 **Run specific test:**
 
@@ -604,12 +764,13 @@ python manage.py test monitoring.tests.SchoolModelTest
 | ----------------------- | -------------- | ----------- |
 | School Model            | 5 unit tests   | ✅ Passing  |
 | AirQualityReading Model | 7 unit tests   | ✅ Passing  |
-| Statistical Methods     | 8 unit tests   | ✅ Passing  |
-| Map View                | Manual testing | ✅ Verified |
+| Statistical Methods     | 7 unit tests   | ✅ Passing  |
+| Map View                | 4 unit tests   | ✅ Passing  |
 | Search Functionality    | Manual testing | ✅ Verified |
 | Responsive Design       | Manual testing | ✅ Verified |
 
-**Total Automated Tests:** 20 passing ✅  
+**Total Automated Tests:** 23 passing ✅
+
 **Manual Testing:** All features tested on desktop, tablet (768px), mobile (320px) ✅
 
 ### Manual Testing Checklist
@@ -687,6 +848,7 @@ All schools located within ~1.5km of Camberwell air quality monitoring stations.
 - **No Historical Visualization** - Statistical methods exist but not displayed in UI
 - **No Automated Updates** - Data fetching not scheduled (will add cron jobs)
 - **Basic Error Logging** - No monitoring dashboard (Phase 2)
+- **Shared Readings** - Schools within the same area share readings from the nearest OpenAQ monitoring    station, so values may be identical across nearby schools
 
 ---
 
@@ -768,5 +930,5 @@ All schools located within ~1.5km of Camberwell air quality monitoring stations.
 
 ---
 
-_Last Updated: November 2025_  
+_Last Updated: February 2026_  
 _MSP3 - Code Institute Full Stack Software Development_
