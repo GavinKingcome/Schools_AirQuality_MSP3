@@ -639,7 +639,7 @@ heroku open
 - DEBUG is off (no detailed error pages shown to users)
 
 ![Heroku Deployment Success](validation/Heroku_validation.png)
-*Live site successfully deployed and accessible on Heroku*
+_Live site successfully deployed and accessible on Heroku_
 
 ### 8. Fetch Air Quality Data (if needed)
 
