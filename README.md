@@ -210,7 +210,7 @@ This application provides full **CRUD (Create, Read, Update, Delete)** operation
 ### Technical Implementation:
 
 - **Django Forms**: ModelForm with custom widgets and validation
-- **Class-Based Logic**: Function-based views with decorators
+- **View Logic**: Function-based views with decorators
 - **Template Inheritance**: Consistent navigation across all pages
 - **CSRF Protection**: Secure form submissions
 - **Messages Framework**: Django's built-in messaging for user feedback
